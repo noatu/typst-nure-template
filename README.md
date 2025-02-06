@@ -1,2 +1,4 @@
-# typst_nure_template
+# Typst template for NURE works.
 
+> [!WARNING]
+> Extremely WIP!
