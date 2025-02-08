@@ -1,4 +1,4 @@
 # Typst template for NURE works.
 
 > [!WARNING]
-> Extremely WIP!
+> Still WIP, but you can use it.
