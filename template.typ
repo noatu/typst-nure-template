@@ -1,27 +1,35 @@
-#import "@preview/indenta:0.0.3": fix-indent
 
-#let hfill(width) = box(width: width, repeat(" ")) // NOTE: This is a HAIR SPACE (U+200A ), not a regular space
+/// numberless heading
+#let nheading(title) = heading(depth: 1, numbering: none, title)
 
-#let uline(align: center, content) = underline([
+/// fill horizontal space with a box and not an empty space
+#let hfill(width) = box(width: width, repeat(" ")) // NOTE: This is a HAIR SPACE (U+200A), not a regular space
+
+/// make underlined cell with filled value
+#let uline(align: center, content) = underline[
   #if align != left { hfill(1fr) }
   #content
   #if align != right { hfill(1fr) }
-])
+]
 
+/// bold text
 #let bold(content) = text(weight: "bold")[#content]
 
-#let fig(path, caption) = [
-  #figure(
+/// insert fig with label and caption
+#let fig(path, caption) = {
+  figure(
     image(path),
     caption: caption,
   )
-  #label(path.split("/").last().split(".").first())
-]
+  label(path.split("/").last().split(".").first())
+}
 
+/// subjects list
 #let subjects = (
   "БД": "Бази даних",
 )
 
+/// education programs list
 #let edu_programs = (
   "ПЗПІ": (
     name: "Інженерія програмного забезпечення",
@@ -44,39 +52,10 @@
   "грудня",
 ).at(month - 1)
 
+/// spacing between lines
 #let spacing = 0.95em
 
-/// DSTU 3008:2015 Template for NURE
-/// -> content
-/// - doc (content): Content to apply the template to.
-/// - doctype ("ЛБ" | "ПЗ" | "КП"): Document type.
-/// - title (str): Title of the document.
-/// - subject_shorthand (str): Subject name.
-/// - department_gen (str): Department name in genitive form.
-/// - edu_program_number (int): Education program number.
-/// - worknumber (int): Number of the work, can be omitted.
-/// - authors ((name: str, full_name_gen: str, variant: int, group: str, gender: str),): List of Authors dicts.
-/// - task_list (done_date: datetime, initial_data: datetime, source: str, content: str, graphics: str): Task list.
-/// - calendar_plan (plan_table: list, approval_date: datetime): Calendar plan.
-/// - abstract (keywords: (str,), text: [str,]): Abstract.
-#let conf(
-  doc,
-  title: "NONE",
-  doctype: "NONE",
-  subject_shorthand: "NONE",
-  department_gen: "Програмної інженерії",
-  worknumber: 1,
-  authors: (),
-  mentors: (),
-  edu_program: "NONE",
-  task_list: (),
-  calendar_plan: (),
-  abstract: (),
-  bib_path: "bibl.yml",
-  appendices: (),
-) = {
-  set document(title: title, author: authors.at(0).name)
-
+#let style(it) = {
   set page(
     paper: "a4",
     margin: (top: 20mm, right: 10mm, bottom: 20mm, left: 25mm),
@@ -115,14 +94,6 @@
 
   set list(indent: 1.35cm, body-indent: 0.5cm, marker: [--])
 
-  // citations
-  let bib-count = state("citation-counter", ())
-  show cite: it => {
-    it
-    bib-count.update(((..c)) => (..c, it.key))
-  }
-  let cit = context bib-count.final().dedup().len()
-
   // figures
   set figure.caption(separator: [ -- ])
 
@@ -132,13 +103,13 @@
   show figure.where(kind: image): set figure(
     numbering: (..) => {
       img.step()
-      context str(counter(heading).get().at(0) + worknumber - 1) + "." + context img.display()
+      context str(counter(heading).get().at(0)) + "." + context img.display()
     },
   )
   show figure.where(kind: table): set figure(
     numbering: (..) => {
       tab.step()
-      context str(counter(heading).get().at(0) + worknumber - 1) + "." + context tab.display()
+      context str(counter(heading).get().at(0)) + "." + context tab.display()
     },
   )
 
@@ -158,8 +129,7 @@
   }
 
   // headings
-  // HACK: I can't set initial value for headers counter, so change is only visual. If this style is changed do not forget to fix images and tables numbering as well.
-  set heading(numbering: (n1, ..x) => numbering("1.1", n1 - 1 + worknumber, ..x))
+  set heading(numbering: "1.1")
 
   show heading.where(level: 1): it => {
     set align(center)
@@ -181,429 +151,460 @@
     v(spacing * 2, weak: true)
   }
 
-  show: fix-indent()
-
-  let subject = subjects.at(subject_shorthand, default: "NONE")
-
-  if doctype in ("ЛБ", "ПЗ") {
-    let mentor = subject.mentors.at(0)
-    align(center)
-    [
-      МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ
-
-      ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
-
-      #linebreak()
-
-      Кафедра Програмної інженерії
-
-      #linebreak()
-      #linebreak()
-      #linebreak()
-
-      Звіт
-
-      з
-      #if doctype == "ЛБ" [лабораторної роботи] else [практичної роботи]
-      #if worknumber != none [№ #worknumber]
-
-      з дисципліни: "#subject.name"
-
-      з теми: "#title"
-
-      #linebreak()
-      #linebreak()
-      #linebreak()
-
-      #columns(2)[
-        #set align(left)
-
-        #if authors.len() == 1 [
-          #let author = authors.at(0)
-          #if author.gender == "m" { [Виконав:\ ] } else { [Виконала:\ ] }
-          ст. гр. #author.group\
-          #author.name\
-          #if author.variant != none { [Варіант: №#author.variant] }
-        ] else [
-          Виконали:\
-          ст. гр. #authors.at(0).group\
-          #authors.map(a => [ #a.name\ ])
-        ]
-
-        #colbreak()
-        #set align(right)
-
-        #if mentor.gender == "m" { [Перевірив:\ ] } else { [Перевірила:\ ] }
-        #mentor.degree #if mentor.degree.len() >= 15 [\ ]
-        #mentor.name\
-      ]
-
-      #v(1fr)
-
-      Харків -- #datetime.today().display("[year]")
-    ]
-  } else if doctype == "КП" {
-    let head_mentor = mentors.at(0)
-    let author = authors.at(0)
-    let edu_program = edu_programs.at(edu_program)
-
-    // page 1
-    align(center)[
-      МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ
-
-      ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
-
-      #linebreak()
-
-      Кафедра Програмної інженерії
-
-      #linebreak()
-
-      ПОЯСНЮВАЛЬНА ЗАПИСКА
-
-      ДО КУРСОВОЇ РОБОТИ
-
-      з дисципліни: "#subject"
-
-      Тема роботи: "#title"
-
-      #linebreak()
-      #linebreak()
-      #linebreak()
-
-      #columns(2, gutter: 4cm)[
-        #set align(left)
-
-        #if authors.len() == 1 [
-          #if author.gender == "m" { [Виконав\ ] } else { [Виконала\ ] } ст. гр. #author.group
-        ]
-
-        #linebreak()
-        Керівник:\
-        #head_mentor.degree
-
-        #linebreak()
-        Робота захищена на оцінку
-
-        #linebreak()
-        Комісія:\
-        #for mentor in mentors {
-          [#mentor.degree\
-          ]
-        }
-
-        #colbreak()
-        #set align(left)
-
-        #linebreak()
-        #author.name
-
-        #linebreak()
-        #linebreak()
-        #head_mentor.name
-
-        #linebreak()
-        #underline(" " * 35)
-
-        #linebreak()
-        #linebreak()
-        #for mentor in mentors {
-          [#mentor.name\
-          ]
-        }
-      ]
-
-      #v(1fr)
-
-      Харків -- #datetime.today().display("[year]")
-
-      #pagebreak()
-    ]
-    //
-
-    // page 2
-    {
-      uline([Харківський національний університет радіоелектроніки])
-
-      linebreak()
-      linebreak()
-
-      grid(
-        columns: (100pt, 1fr),
-        bold([
-          Кафедра
-          Дисципліна
-          Спеціальність
-        ]),
-        {
-          uline(align: left, department_gen)
-          linebreak()
-          uline(align: left, subject)
-          linebreak()
-          uline(align: left, [#edu_program.number #edu_program.name])
-        },
-      )
-      grid(
-        columns: (1fr, 1fr, 1fr),
-        gutter: 0.3fr,
-        [#bold("Курс") #uline(2)], [#bold("Група") #uline(author.group)], [#bold("Семестр") #uline(3)],
-      )
-
-      linebreak()
-      linebreak()
-      linebreak()
-
-      align(center)[#bold([
-          ЗАВДАННЯ
-
-          на курсову роботу студента
-        ])]
-
-      linebreak()
-
-      uline(align: left)[#emph(author.full_name_gen)]
-
-      linebreak()
-      linebreak()
-
-      bold([ #"1. "Тема роботи: ])
-      uline([#title.])
-
-      linebreak()
-
-      {
-        bold([ #"2. "Строк здачі закінченої роботи: ])
-        uline(task_list.done_date.display("[day].[month].[year]"))
-        hfill(10fr)
-      }
-
-      linebreak()
-
-      bold([ #"3. "Вихідні дані для роботи: ])
-      uline(task_list.source)
-
-      linebreak()
-
-      bold([ #"4. "Зміст розрахунково-пояснювальної записки: ])
-      uline(task_list.content)
-
-      linebreak()
-
-      bold([ #"5. "Перелік графічного матеріалу: ])
-      uline(task_list.graphics)
-
-      linebreak()
-
-      {
-        bold([ #"6. "Строк здачі закінченої роботи: ])
-        uline(task_list.done_date.display("[day].[month].[year]"))
-        hfill(10fr)
-      }
-
-      pagebreak()
-    }
-
-    // page 3
-    {
-      align(center)[#bold([КАЛЕНДАРНИЙ ПЛАН])]
-
-      linebreak()
-
-      calendar_plan.plan_table
-
-      linebreak()
-
-      grid(
-        columns: (6fr, 5fr),
-        grid(
-          columns: (1fr, 3fr, 1fr),
-          gutter: 0.2fr,
-          [
-            Студент
-            #linebreak()
-            Керівник
-            #linebreak()
-            #align(center, ["#calendar_plan.approval_date.day()"])
-          ],
-          [
-            #uline(align: center, [])
-            #linebreak()
-            #uline(align: center, [])
-            #linebreak()
-            #uline(align: center, month_gen(calendar_plan.approval_date.month()))
-          ],
-          {
-            linebreak()
-            linebreak()
-            [#calendar_plan.approval_date.year() р.]
-          },
-        ),
-        [
-          #author.name,
-          #linebreak()
-          #head_mentor.degree
-          #head_mentor.name.
-        ],
-      )
-
-      pagebreak()
-    }
-
-    // page 4 {{{
-    [
-      #align(center)[#bold([РЕФЕРАТ])]
-      #linebreak()
-
-      #context [
-        #let pages = counter(page).final().at(0)
-        #let tables = counter("table").final().at(0)
-        #let images = counter("image").final().at(0)
-        #let bibs = bib-count.final().dedup().len()
-
-        #let counters = ()
-
-        #if pages != 0 { counters.push([#pages с.]) }
-        #if tables != 0 { counters.push([#tables табл.]) }
-        #if images != 0 { counters.push([#images рис.]) }
-        #if bibs != 0 { counters.push([#bibs джерел]) }
-
-        Пояснювальна записка до курсової роботи: #counters.join(", ").
-      ]
-
-      #linebreak()
-
-      #{
-        let keywords = abstract.keywords
-        let is_cyrillic = word => word
-          .split("")
-          .any(char => ("А" <= char and char <= "я") or char == "Ё" or char == "ё")
-
-        let n = keywords.len()
-        for i in range(n) {
-          for j in range(0, n - i - 1) {
-            if (
-              (not is_cyrillic(keywords.at(j)) and is_cyrillic(keywords.at(j + 1)))
-                or (
-                  is_cyrillic(keywords.at(j)) == is_cyrillic(keywords.at(j + 1)) and keywords.at(j) > keywords.at(j + 1)
-                )
-            ) {
-              (keywords.at(j), keywords.at(j + 1)) = (keywords.at(j + 1), keywords.at(j))
-            }
-          }
-        }
-
-        keywords.join(", ")
-      }
-
-      #linebreak()
-
-      #abstract.text
-    ]
-    // }}}
-
-    // page 5 {{{
-    show outline.entry: it => {
-      show linebreak: none
-      it
-    }
-    outline(
-      title: [
-        ЗМІСТ
-        #v(spacing * 2)
-      ],
-      depth: 2,
-      indent: auto,
-    )
-    // }}}
+  it
+}
+
+/// DSTU 3008:2015 Template for NURE
+/// -> content
+/// - doc (content): Content to apply the template to.
+/// - title (str): Title of the document.
+/// - subject_shorthand (str): Subject short name.
+/// - department_gen (str): Department name in genitive form.
+/// - authors ((name: str, full_name_gen: str, variant: int, group: str, gender: str),): List of Authors dicts.
+/// - mentors ((name: str, gender: str, degree: str),): List of mentors dicts.
+/// - edu_program_shorthand (str): Education program shorthand.
+/// - task_list (done_date: datetime, initial_data: datetime, source: (content | str), content: (content | str), graphics: (content | str)): Task list object.
+/// - calendar_plan ( plan_table: (content | str), approval_date: datetime): Calendar plan object.
+/// - abstract (keywords: (str, ), text: (content | str)): Abstract object.
+/// - bib_path path: Path to the bibliography yaml file.
+/// - appendices ((title: str, content: content, ): List of appendices objects.
+#let cw-template(
+  doc,
+  title: "NONE",
+  subject_shorthand: "NONE",
+  department_gen: "Програмної інженерії",
+  author: (),
+  mentors: (),
+  edu_program_shorthand: "ПЗПІ",
+  task_list: (),
+  calendar_plan: (),
+  abstract: (),
+  bib_path: "bibl.yml",
+  appendices: (),
+) = {
+  set document(title: title, author: author.name)
+
+  show: style
+
+  let bib-count = state("citation-counter", ())
+  show cite: it => {
+    it
+    bib-count.update(((..c)) => (..c, it.key))
   }
-
-  doc
-
-  // bibliography {{{
   show bibliography: it => {
     set text(size: 0pt)
     it
   }
 
-  heading(depth: 1, numbering: none)[Перелік джерел посилання]
 
-  bibliography(
-    bib_path,
-    style: "ieee",
-    full: true,
-    title: none,
-  )
+  let head_mentor = mentors.at(0)
+  let edu_program = edu_programs.at(edu_program_shorthand)
 
-  let bib_data = yaml(bib_path)
+  // page 1
+  [
+    #set align(center)
+    МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ
 
-  let format-entry(citation) = {
-    if (citation.type == "Web") {
-      let date_array = citation.url.date.split("-")
-      let date = datetime(
-        year: int(date_array.at(0)),
-        month: int(date_array.at(1)),
-        day: int(date_array.at(2)),
-      )
-      [
-        #citation.title.
-        _#{citation.author}_.
-        URL: #citation.url.value (дата звернення: #date.display("[day].[month].[year]")).
-      ]
-    } else if citation.type == "Book" [
-      #citation.author
-      #citation.title.
-      #citation.publisher,
-      #citation.date.
-      #citation.page-total c.
-    ] else [
-      UNSUPPORTED BIBLIOGRAPHY ENTRY TYPE, PLEASE OPEN THE ISSUE
+    ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
+
+    \
+
+    Кафедра Програмної інженерії
+
+    \
+
+    ПОЯСНЮВАЛЬНА ЗАПИСКА
+
+    ДО КУРСОВОЇ РОБОТИ
+
+    з дисципліни: "#subjects.at(subject_shorthand, default: "NONE")"
+
+    Тема роботи: "#title"
+
+    \ \ \
+
+    #columns(2, gutter: 4cm)[
+      #set align(left)
+
+      #if author.gender == "m" { [Виконав\ ] } else { [Виконала\ ] } ст. гр. #author.group
+
+      \
+      Керівник:\
+      #head_mentor.degree
+
+      \
+      Робота захищена на оцінку
+
+      \
+      Комісія:\
+      #for mentor in mentors {
+        [#mentor.degree\
+        ]
+      }
+
+      #colbreak()
+      #set align(left)
+
+      \
+      #author.name
+
+      \ \
+      #head_mentor.name
+
+      \
+      #underline(" " * 35)
+
+      \ \
+      #for mentor in mentors {
+        [#mentor.name\
+        ]
+      }
     ]
-  }
 
-  show enum.item: it => {
-    box(width: 1.25cm)
-    box(width: 1em + 0.5cm)[#it.number.]
-    it.body
+    #v(1fr)
+
+    Харків -- #datetime.today().display("[year]")
+
+    #pagebreak()
+  ]
+  //
+
+  // page 2
+  {
+    uline([Харківський національний університет радіоелектроніки])
+
     linebreak()
-  }
+    linebreak()
 
-  context {
-    let citations = query(ref.where(element: none)).map(r => str(r.target)).dedup()
+    grid(
+      columns: (100pt, 1fr),
+      bold([
+        Кафедра
+        Дисципліна
+        Спеціальність
+      ]),
+      {
+        uline(align: left, department_gen)
+        linebreak()
+        uline(align: left, subjects.at(subject_shorthand))
+        linebreak()
+        uline(align: left, [#edu_program.number #edu_program.name])
+      },
+    )
+    grid(
+      columns: (1fr, 1fr, 1fr),
+      gutter: 0.3fr,
+      [#bold("Курс") #uline(2)], [#bold("Група") #uline(author.group)], [#bold("Семестр") #uline(3)],
+    )
 
-    for (i, citation) in citations.enumerate() {
-      enum.item(
-        i + 1,
-        format-entry(bib_data.at(citation)),
-      )
+    linebreak()
+    linebreak()
+    linebreak()
+
+    align(center, bold[ЗАВДАННЯ \ на курсову роботу студента])
+
+    linebreak()
+
+    uline(align: left)[_#author.full_name_gen _]
+
+    linebreak()
+    linebreak()
+
+    bold[\1. Тема роботи:]
+    uline[#title.]
+
+    linebreak()
+
+    {
+      bold[\2. Строк здачі закінченої роботи:]
+      uline(task_list.done_date.display("[day].[month].[year]"))
+      hfill(10fr)
     }
+
+    linebreak()
+
+    bold[\3. Вихідні дані для роботи:]
+    uline(task_list.source)
+
+    linebreak()
+
+    bold[\4. Зміст розрахунково-пояснювальної записки:]
+    uline(task_list.content)
+
+    linebreak()
+
+    bold[\5. Перелік графічного матеріалу:]
+    uline(task_list.graphics)
+
+    linebreak()
+
+    {
+      bold[\6. Строк здачі закінченої роботи:]
+      uline(task_list.done_date.display("[day].[month].[year]"))
+      hfill(10fr)
+    }
+
+    pagebreak()
   }
-  // }}}
 
-  // appendices {{{
-  counter(heading).update(0)
+  // page 3
+  {
+    align(center, bold[КАЛЕНДАРНИЙ ПЛАН])
 
-  for (i, appendix) in appendices.enumerate() [
-    #set heading(
-      numbering: i => [
-        Додаток #"АБВГДЕЖИКЛМНПРСТУФХЦШЩЮЯ".split("").at(i)
+    linebreak()
+
+    calendar_plan.plan_table
+
+    linebreak()
+
+    grid(
+      columns: (6fr, 5fr),
+      grid(
+        columns: (1fr, 3fr, 1fr),
+        gutter: 0.2fr,
+        [
+          Студент \
+          Керівник \
+          #align(center)["#calendar_plan.approval_date.day()"]
+        ],
+        [
+          #uline(align: center, []) \
+          #uline(align: center, []) \
+          #uline(align: center, month_gen(calendar_plan.approval_date.month()))
+        ],
+        [
+          \ \
+          #calendar_plan.approval_date.year() р.
+        ],
+      ),
+      [
+        #author.name, \
+        #head_mentor.degree
+        #head_mentor.name.
       ],
     )
 
-    #show heading: it => {
-      set align(center)
-      set text(size: 14pt, weight: "regular")
-      pagebreak(weak: true)
+    pagebreak()
+  }
 
-      bold(upper(counter(heading).display(it.numbering)))
+  // page 4 {{{
+  [
+    #align(center, bold([РЕФЕРАТ])) \
 
-      linebreak()
+    #context [
+      #let pages = counter(page).final().at(0)
+      #let tables = counter("table").final().at(0)
+      #let images = counter("image").final().at(0)
+      #let bibs = bib-count.final().dedup().len()
 
-      it.body
+      #let counters = ()
 
-      v(spacing * 2, weak: true)
+      #if pages != 0 { counters.push([#pages с.]) }
+      #if tables != 0 { counters.push([#tables табл.]) }
+      #if images != 0 { counters.push([#images рис.]) }
+      #if bibs != 0 { counters.push([#bibs джерел]) }
+
+      Пояснювальна записка до курсової роботи: #counters.join(", ").
+    ]
+
+    \
+
+    #{
+      let keywords = abstract.keywords
+      let is_cyrillic = word => word.split("").any(char => ("А" <= char and char <= "я"))
+
+      let n = keywords.len()
+      for i in range(n) {
+        for j in range(0, n - i - 1) {
+          if (
+            (not is_cyrillic(keywords.at(j)) and is_cyrillic(keywords.at(j + 1)))
+              or (
+                is_cyrillic(keywords.at(j)) == is_cyrillic(keywords.at(j + 1)) and keywords.at(j) > keywords.at(j + 1)
+              )
+          ) {
+            (keywords.at(j), keywords.at(j + 1)) = (keywords.at(j + 1), keywords.at(j))
+          }
+        }
+      }
+
+      keywords.join(", ")
     }
-    = #appendix.title
-    #appendix.content
+
+    \
+
+    #abstract.text
   ]
   // }}}
+
+  // page 5
+  outline(
+    title: [
+      ЗМІСТ
+      #v(spacing * 2, weak: true)
+    ],
+    depth: 2,
+    indent: auto,
+  )
+
+  doc
+
+  // bibliography
+  {
+    heading(depth: 1, numbering: none)[Перелік джерел посилання]
+
+    bibliography(
+      bib_path,
+      style: "ieee",
+      full: true,
+      title: none,
+    )
+
+    let bib_data = yaml(bib_path)
+
+    let format-entry(citation) = {
+      if (citation.type == "Web") {
+        let date_array = citation.url.date.split("-")
+        let date = datetime(
+          year: int(date_array.at(0)),
+          month: int(date_array.at(1)),
+          day: int(date_array.at(2)),
+        )
+        [
+          #citation.title.
+          _#{citation.author}_.
+          URL: #citation.url.value (дата звернення: #date.display("[day].[month].[year]")).
+        ]
+      } else if citation.type == "Book" [
+        #citation.author
+        #citation.title.
+        #citation.publisher,
+        #citation.date.
+        #citation.page-total c.
+      ] else [
+        UNSUPPORTED BIBLIOGRAPHY ENTRY TYPE, PLEASE OPEN THE ISSUE
+      ]
+    }
+
+    show enum.item: it => {
+      box(width: 1.25cm)
+      box(width: 1em + 0.5cm)[#it.number.]
+      it.body
+      linebreak()
+    }
+
+    context {
+      for (i, citation) in query(ref.where(element: none)).map(r => str(r.target)).dedup().enumerate() {
+        enum.item(
+          i + 1,
+          format-entry(bib_data.at(citation)),
+        )
+      }
+    }
+  }
+
+  // appendices
+  {
+    counter(heading).update(0)
+
+    for (i, appendix) in appendices.enumerate() [
+      #set heading(
+        numbering: i => [
+          Додаток #"АБВГДЕЖИКЛМНПРСТУФХЦШЩЮЯ".split("").at(i)
+        ],
+      )
+
+      #show heading: it => {
+        set align(center)
+        set text(size: 14pt, weight: "regular")
+
+        pagebreak(weak: true)
+        bold(upper(counter(heading).display(it.numbering)))
+        linebreak()
+        it.body
+        v(spacing * 2, weak: true)
+      }
+      #heading(appendix.title)
+      #appendix.content
+    ]
+  }
 }
+
+/// DSTU 3008:2015 Template for NURE
+/// -> content
+/// - doc (content): Content to apply the template to.
+/// - doctype ("ЛБ" | "ПЗ"): Document type.
+/// - title (str): Title of the document.
+/// - subject_shorthand (str): Subject short name.
+/// - department_gen (str): Department name in genitive form.
+/// - worknumber (int): Number of the work, can be omitted.
+/// - authors ((name: str, full_name_gen: str, variant: int, group: str, gender: str),): List of Authors dicts.
+/// - mentor (name: str, gender: str, degree: str): Mentors objects.
+#let lab-pz-template(
+  doc,
+  doctype: "NONE",
+  title: "NONE",
+  subject_shorthand: "NONE",
+  department_gen: "Програмної інженерії",
+  worknumber: 1,
+  authors: (),
+  mentor: (),
+) = {
+  set document(title: title, author: authors.at(0).name)
+
+  show: style
+
+  context counter(heading).update(worknumber - 1)
+
+  align(center)[
+    МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ \
+    ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
+
+    \ \
+    Кафедра #department_gen
+
+    \ \ \
+    Звіт \
+    з
+    #if doctype == "ЛБ" [лабораторної роботи] else [практичної роботи]
+    #if worknumber != none [№ #worknumber]
+
+    з дисципліни: "#subjects.at(subject_shorthand, default: "UNLNOWN SUBJECT, PLEASE OPEN THE ISSUE")"
+
+    з теми: "#title"
+
+    \ \ \ \
+
+    #columns(2)[
+      #set align(left)
+
+      #if authors.len() == 1 [
+        #let author = authors.at(0)
+        #if author.gender == "m" { [Виконав:\ ] } else { [Виконала:\ ] }
+        ст. гр. #author.group\
+        #author.name\
+        #if author.variant != none { [Варіант: №#author.variant] }
+      ] else [
+        Виконали:\
+        ст. гр. #authors.at(0).group\
+        #authors.map(a => [ #a.name\ ])
+      ]
+
+      #colbreak()
+      #set align(right)
+
+      #if mentor.gender == "m" { [Перевірив:\ ] } else { [Перевірила:\ ] }
+      #mentor.degree #if mentor.degree.len() >= 15 [\ ]
+      #mentor.name\
+    ]
+
+    #v(1fr)
+
+    Харків -- #datetime.today().display("[year]")
+  ]
+
+  pagebreak(weak: true)
+
+  heading(title)
+  doc
+}
+

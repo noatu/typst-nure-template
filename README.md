@@ -1,4 +1,6 @@
 # Typst template for NURE works.
 
-> [!WARNING]
-> Still WIP, but you can use it.
+> [!INFO]
+> Need some more work to be done, but already can be used.
+
+!TODO - Add more info about the template.
