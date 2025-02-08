@@ -1,4 +1,5 @@
 #import "template.typ": *
+#import "@preview/indenta:0.0.3": fix-indent
 
 #let author = (
   name: "Ситник Є. С.",
@@ -88,3 +89,5 @@
   bib_path: "bibl.yml",
   appendices: appendices,
 )
+
+#show: fix-indent()
