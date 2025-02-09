@@ -15,14 +15,14 @@
 /// bold text
 #let bold(content) = text(weight: "bold")[#content]
 
-/// insert fig with label and caption
-#let fig(path, caption) = {
-  figure(
+/// captioned image with label derived from path
+#let img(path, caption) = [
+  #figure(
     image(path),
     caption: caption,
   )
-  label(path.split("/").last().split(".").first())
-}
+  #label(path.split("/").last().split(".").first())
+]
 
 /// subjects list
 #let subjects = (
@@ -112,6 +112,19 @@
       context str(counter(heading).get().at(0)) + "." + context tab.display()
     },
   )
+
+  // appearance of references to images
+  show ref: it => {
+    let el = it.element
+    if el != none and el.kind == image {
+      link(
+        el.location(),
+        [(див. рис. #numbering(el.numbering))],
+      )
+    } else {
+      it
+    }
+  }
 
   // TODO: Maybe this will be better. Must be investigated.
   //
@@ -607,4 +620,3 @@
   heading(title)
   doc
 }
-
