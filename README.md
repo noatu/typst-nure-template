@@ -56,10 +56,12 @@ Some text
 ### Example Project Structure
 ```
 project-folder/
-│-- main.typ
-│-- template.typ
-│-- images/
+├── main.typ
+├── template.typ
+├── images/
 │   ├── figure1.png
 │   ├── figure2.png
+│   ├── ...
+├── ...
 ```
 This setup ensures that `main.typ` includes and applies the template correctly.
