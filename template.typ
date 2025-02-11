@@ -439,7 +439,7 @@
     \
 
     #{
-      let keywords = abstract.keywords
+      let keywords = abstract.keywords.map(upper)
       let is_cyrillic = word => word.split("").any(char => ("А" <= char and char <= "я"))
 
       let n = keywords.len()
