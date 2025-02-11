@@ -292,7 +292,7 @@
 
     #v(1fr)
 
-    Харків -- #datetime.today().display("[year]")
+    Харків -- #task_list.done_date.display("[year]")
 
     #pagebreak()
   ]
