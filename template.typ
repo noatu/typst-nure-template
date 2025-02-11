@@ -117,6 +117,8 @@
       context str(counter(heading).get().at(0)) + "." + context tab.display()
     },
   )
+  set figure.caption(position: top)
+  // TODO: left align the caption
 
   // appearance of references to images and tables
   show ref: it => {
