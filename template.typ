@@ -101,6 +101,8 @@
 
   // figures
   set figure.caption(separator: [ -- ])
+  show figure.where(kind: table): set figure.caption(position: top)
+  show figure.caption.where(kind: table): set align(left)
 
   let img = counter("image")
   let tab = counter("table")
@@ -117,7 +119,6 @@
       context str(counter(heading).get().at(0)) + "." + context tab.display()
     },
   )
-  show figure.where(kind: table): set figure.caption(position: top) // TODO: left align the caption
 
   // appearance of references to images and tables
   show ref: it => {
