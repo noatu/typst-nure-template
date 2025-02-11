@@ -117,18 +117,28 @@
       context str(counter(heading).get().at(0)) + "." + context tab.display()
     },
   )
+  show figure.where(kind: table): set figure.caption(position: top) // TODO: left align the caption
 
-  // appearance of references to images
+  // appearance of references to images and tables
   show ref: it => {
     let el = it.element
-    if el != none and el.kind == image {
-      link(
-        el.location(),
-        [(див. рис. #numbering(el.numbering))],
-      )
-    } else {
-      it
+
+    if el == none or not el.has("kind") {
+      return it
     }
+
+    let el_name = if el.kind == image {
+      "рис."
+    } else if el.kind == table {
+      "таблицю"
+    } else {
+      return it
+    }
+
+    link(
+      el.location(),
+      [(див. #el_name #numbering(el.numbering))],
+    )
   }
 
   // TODO: Maybe this will be better. Must be investigated.
