@@ -15,13 +15,27 @@
 /// bold text
 #let bold(content) = text(weight: "bold")[#content]
 
-/// captioned image with label derived from path
+/// captioned image with label derived from path:
+/// - `image.png` = @image
+/// - `img/image.png` = @image
+/// - `img/foo/image.png` = @foo_image
+/// - `img/foo/foo_image.png` = @foo_image
 #let img(path, caption) = [
+  #let parts = path.split(".").first().split("/")
+
   #figure(
     image(path),
     caption: caption,
   )
-  #label(path.split("/").last().split(".").first())
+  #label(
+    if parts.len() <= 2 or parts.at(-1).starts-with(parts.at(-2)) {
+      // ("image",), (_, "image") and (.., "img", "img_image")
+      parts.last()
+    } else {
+      // (.., "img", "image") = "img_image"
+      parts.at(-2) + "_" + parts.at(-1)
+    }.replace(" ", "_"),
+  )
 ]
 
 /// subjects list
