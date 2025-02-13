@@ -114,61 +114,52 @@
   set list(indent: 1.35cm, body-indent: 0.5cm, marker: [--])
 
   // figures
+  show figure: it => {
+    v(spacing * 2, weak: true)
+    it
+    v(spacing * 2, weak: true)
+  }
+
   set figure.caption(separator: [ -- ])
   show figure.where(kind: table): set figure.caption(position: top)
   show figure.caption.where(kind: table): set align(left)
 
-  let img = counter("image")
-  let tab = counter("table")
-
-  show figure.where(kind: image): set figure(
-    numbering: (..) => {
-      img.step()
-      context str(counter(heading).get().at(0)) + "." + context img.display()
-    },
-  )
-  show figure.where(kind: table): set figure(
-    numbering: (..) => {
-      tab.step()
-      context str(counter(heading).get().at(0)) + "." + context tab.display()
-    },
-  )
+  // figure numbering
+  show heading.where(level: 1): it => {
+    counter(math.equation).update(0)
+    counter(figure.where(kind: image)).update(0)
+    counter(figure.where(kind: table)).update(0)
+    counter(figure.where(kind: raw)).update(0)
+    it
+  }
+  set math.equation(numbering: (..num) => numbering("(1.1)", counter(heading).get().at(0), num.pos().first()))
+  set figure(numbering: (..num) => numbering("1.1", counter(heading).get().at(0), num.pos().first()))
 
   // appearance of references to images and tables
+  set ref(
+    supplement: it => {
+      if it == none or not it.has("kind") {
+        it
+      } else if it.kind == image {
+        "див. рис."
+      } else if it.kind == table {
+        "див. таблицю"
+      } else {
+        it
+      }
+    },
+  )
   show ref: it => {
     let el = it.element
 
     if el == none or not el.has("kind") {
       return it
     }
-
-    let el_name = if el.kind == image {
-      "рис."
-    } else if el.kind == table {
-      "таблицю"
-    } else {
+    if el.kind != image and el.kind != table {
       return it
     }
 
-    link(
-      el.location(),
-      [(див. #el_name #numbering(el.numbering))],
-    )
-  }
-
-  // TODO: Maybe this will be better. Must be investigated.
-  //
-  // set math.equation(numbering: (..num) =>
-  //   numbering("(1.1)", counter(heading).get().first(), num.pos().first())
-  // )
-  // set figure(numbering: (..num) =>
-  //   numbering("1.1", counter(heading).get().first(), num.pos().first())
-  // )
-
-  show figure: it => {
-    v(spacing * 2, weak: true)
-    it
-    v(spacing * 2, weak: true)
+    [(#it)]
   }
 
   // headings
@@ -666,3 +657,5 @@
   heading(title)
   doc
 }
+
+// vim:sts=2:sw=2
