@@ -221,7 +221,7 @@
 /// - authors ((name: str, full_name_gen: str, variant: int, group: str, gender: str),): List of Authors dicts.
 /// - mentors ((name: str, gender: str, degree: str),): List of mentors dicts.
 /// - edu_program_shorthand (str): Education program shorthand.
-/// - task_list (done_date: datetime, initial_data: datetime, source: (content | str), content: (content | str), graphics: (content | str)): Task list object.
+/// - task_list (done_date: datetime, initial_date: datetime, source: (content | str), content: (content | str), graphics: (content | str)): Task list object.
 /// - calendar_plan ( plan_table: (content | str), approval_date: datetime): Calendar plan object.
 /// - abstract (keywords: (str, ), text: (content | str)): Abstract object.
 /// - bib_path path: Path to the bibliography yaml file.
@@ -397,8 +397,8 @@
     linebreak()
 
     {
-      bold[\6. Строк здачі закінченої роботи:]
-      uline(task_list.done_date.display("[day].[month].[year]"))
+      bold[\6. Дата видачі завдання:]
+      uline(task_list.initial_date.display("[day].[month].[year]"))
       hfill(10fr)
     }
 
