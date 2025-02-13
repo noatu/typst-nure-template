@@ -86,7 +86,7 @@
     },
   )
 
-  set text(font: "Liberation Serif", size: 14pt, hyphenate: false, lang: "ua")
+  set text(font: ("Times New Roman", "Liberation Serif"), size: 14pt, hyphenate: false, lang: "ua")
   set par(justify: true, first-line-indent: 1.25cm)
   set underline(evade: false)
 
@@ -529,7 +529,7 @@
         )
         [
           #citation.title.
-          _#{citation.author}_.
+          _#{citation.author}_. // TODO: remove italic case, issue #7
           URL: #citation.url.value (дата звернення: #date.display("[day].[month].[year]")).
         ]
       } else if citation.type == "Book" [
@@ -539,7 +539,7 @@
         #citation.date.
         #citation.page-total c.
       ] else [
-        UNSUPPORTED BIBLIOGRAPHY ENTRY TYPE, PLEASE OPEN THE ISSUE
+        UNSUPPORTED BIBLIOGRAPHY ENTRY TYPE, PLEASE OPEN AN ISSUE
       ]
     }
 
@@ -626,7 +626,7 @@
     #if doctype == "ЛБ" [лабораторної роботи] else [практичної роботи]
     #if worknumber != none [№ #worknumber]
 
-    з дисципліни: "#subjects.at(subject_shorthand, default: "UNLNOWN SUBJECT, PLEASE OPEN THE ISSUE")"
+    з дисципліни: "#subjects.at(subject_shorthand, default: "UNLNOWN SUBJECT, PLEASE OPEN AN ISSUE")"
 
     з теми: "#title"
 
