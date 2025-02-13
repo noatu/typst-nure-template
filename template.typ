@@ -20,23 +20,23 @@
 /// - `img/image.png` = @image
 /// - `img/foo/image.png` = @foo_image
 /// - `img/foo/foo_image.png` = @foo_image
-#let img(path, caption) = [
-  #let parts = path.split(".").first().split("/")
+/// if source is specified, it will be appended to the caption as " (за даними `source`)"
+/// otherwise " (рисунок виконано самостійно)" will be appended to the caption
+#let img(path, caption, source: none) = {
+  let parts = path.split(".").first().split("/")
 
-  #figure(
-    image(path),
-    caption: caption,
-  )
-  #label(
-    if parts.len() <= 2 or parts.at(-1).starts-with(parts.at(-2)) {
-      // ("image",), (_, "image") and (.., "img", "img_image")
-      parts.last()
-    } else {
-      // (.., "img", "image") = "img_image"
-      parts.at(-2) + "_" + parts.at(-1)
-    }.replace(" ", "_"),
-  )
-]
+  let label_string = if parts.len() <= 2 or parts.at(-1).starts-with(parts.at(-2)) {
+    // ("image",), (_, "image") and (.., "img", "img_image")
+    parts.last()
+  } else {
+    // (.., "img", "image") = "img_image"
+    parts.at(-2) + "_" + parts.at(-1)
+  }.replace(" ", "_")
+
+  caption = [#caption #if source != none [(за даними #source)] else [(рисунок виконано самостійно)]]
+
+  [#figure(image(path), caption: caption) #label(label_string)]
+}
 
 /// subjects list
 #let subjects = (
@@ -451,8 +451,9 @@
 
     #context [
       #let pages = counter(page).final().at(0)
-      #let tables = counter("table").final().at(0)
-      #let images = counter("image").final().at(0)
+      #let tables = counter(figure.where(kind: table)).final().at(0)
+      // alternative: query(figure.where(kind: image)).len()
+      #let images = counter(figure.where(kind: image)).final().at(0)
       #let bibs = bib-count.final().dedup().len()
 
       #let counters = ()
