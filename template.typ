@@ -86,7 +86,7 @@
     },
   )
 
-  set text(font: ("Times New Roman", "Liberation Serif"), size: 14pt, hyphenate: false, lang: "ua")
+  set text(font: ("Times New Roman", "Liberation Serif"), size: 14pt, hyphenate: false, lang: "uk")
   set par(justify: true, first-line-indent: (amount: 1.25cm, all: true))
   set underline(evade: false)
 
