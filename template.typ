@@ -634,14 +634,16 @@
 
     #columns(2)[
       #set align(left)
-
-      #if authors.len() == 1 [
-        #let author = authors.at(0)
-        #if author.gender == "m" { [Виконав:\ ] } else { [Виконала:\ ] }
-        ст. гр. #author.group\
-        #author.name\
-        #if author.variant != none { [Варіант: №#author.variant] }
-      ] else [
+      #set par(first-line-indent: 0pt)
+      #if authors.len() == 1 {
+        let author = authors.at(0)
+        if author.gender == "m" [Виконав:\ ] else [Виконала:\ ]
+        [
+          ст. гр. #author.group\
+          #author.name\
+        ]
+        if author.variant != none [Варіант: №#author.variant]
+      } else [
         Виконали:\
         ст. гр. #authors.at(0).group\
         #authors.map(a => [ #a.name\ ])
