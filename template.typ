@@ -1,4 +1,5 @@
 
+/// functions {{{1
 /// numberless heading
 #let nheading(title) = heading(depth: 1, numbering: none, title)
 
@@ -15,7 +16,7 @@
 /// bold text
 #let bold(content) = text(weight: "bold")[#content]
 
-/// captioned image with label derived from path:
+/// captioned image with label derived from path: {{{2
 /// - "image.png" = @image
 /// - "img/image.png" = @image
 /// - "img/foo/image.png" = @foo_image
@@ -46,7 +47,8 @@
   [#figure(image(path), caption: caption) #label(label_string)]
 }
 
-/// subjects list
+/// variables {{{1
+/// subjects list {{{2
 #let subjects = (
   "БД": "Бази даних",
   "ОПНJ": "Основи програмування на Java",
@@ -56,7 +58,7 @@
   "Ф": "Філософія",
 )
 
-/// education programs list
+/// education programs list {{{2
 #let edu_programs = (
   "ПЗПІ": (
     name: "Інженерія програмного забезпечення",
@@ -64,6 +66,7 @@
   ),
 )
 
+// months {{{2
 #let month_gen(month) = (
   "січня",
   "лютого",
@@ -79,7 +82,8 @@
   "грудня",
 ).at(month - 1)
 
-/// spacing between lines
+/// styling {{{1
+/// spacing between lines {{{2
 #let spacing = 0.95em
 
 #let style(it) = {
@@ -103,7 +107,7 @@
   set par(spacing: spacing)
   set par(leading: spacing)
 
-  // enums and lists
+  // enums and lists {{{2
   let ua_alph_numbering() = {
     // INFO: This alphabet is not full, maybe it should be extended or maybe not.
     //       I cant remember nor find proper formatting rules.
@@ -121,7 +125,7 @@
 
   set list(indent: 1.35cm, body-indent: 0.5cm, marker: [--])
 
-  // figures
+  // figures {{{2
   show figure: it => {
     v(spacing * 2, weak: true)
     it
@@ -143,7 +147,7 @@
   set math.equation(numbering: (..num) => numbering("(1.1)", counter(heading).get().at(0), num.pos().first()))
   set figure(numbering: (..num) => numbering("1.1", counter(heading).get().at(0), num.pos().first()))
 
-  // appearance of references to images and tables
+  // appearance of references to images and tables {{{2
   set ref(
     supplement: it => {
       if it == none or not it.has("kind") {
@@ -170,7 +174,7 @@
     [(#it)]
   }
 
-  // headings
+  // headings {{{2
   set heading(numbering: "1.1")
 
   show heading.where(level: 1): it => {
@@ -193,7 +197,7 @@
     v(spacing * 2, weak: true)
   }
 
-  // listings
+  // listings {{{2
   show raw: it => {
     let new_spacing = 0.5em
     set block(spacing: new_spacing)
@@ -211,7 +215,7 @@
   it
 }
 
-/// DSTU 3008:2015 Template for NURE
+/// DSTU 3008:2015 Template for NURE {{{1
 /// -> content
 /// - doc (content): Content to apply the template to.
 /// - title (str): Title of the document.
@@ -257,7 +261,7 @@
   let head_mentor = mentors.at(0)
   let edu_program = edu_programs.at(edu_program_shorthand)
 
-  // page 1
+  // page 1 {{{2
   [
     #set align(center)
     МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ
@@ -324,9 +328,8 @@
 
     #pagebreak()
   ]
-  //
 
-  // page 2
+  // page 2 {{{2
   {
     uline([Харківський національний університет радіоелектроніки])
 
@@ -404,7 +407,7 @@
     pagebreak()
   }
 
-  // page 3
+  // page 3 {{{2
   {
     align(center, bold[КАЛЕНДАРНИЙ ПЛАН])
 
@@ -444,7 +447,7 @@
     pagebreak()
   }
 
-  // page 4 {{{
+  // page 4 {{{2
   [
     #align(center, bold([РЕФЕРАТ])) \
 
@@ -492,9 +495,8 @@
 
     #abstract.text
   ]
-  // }}}
 
-  // page 5
+  // page 5 {{{2
   outline(
     title: [
       ЗМІСТ
@@ -506,7 +508,7 @@
 
   doc
 
-  // bibliography
+  // bibliography {{{2
   {
     heading(depth: 1, numbering: none)[Перелік джерел посилання]
 
@@ -560,7 +562,7 @@
     }
   }
 
-  // appendices
+  // appendices {{{2
   {
     counter(heading).update(0)
 
@@ -587,7 +589,7 @@
   }
 }
 
-/// DSTU 3008:2015 Template for NURE
+/// DSTU 3008:2015 Template for NURE {{{1
 /// -> content
 /// - doc (content): Content to apply the template to.
 /// - doctype ("ЛБ" | "ПЗ"): Document type.
@@ -668,4 +670,4 @@
   doc
 }
 
-// vim:sts=2:sw=2
+// vim:sts=2:sw=2:fdl=0:fdm=marker
