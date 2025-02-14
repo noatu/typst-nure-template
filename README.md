@@ -42,7 +42,7 @@ To use the template, include it in your project and utilize the provided functio
 #import "path/to/template.typ": *
 
 // Setup the document
-#show: pz-lb-template.with(
+#show: lab-pz-template.with(
     title: "Some title",
 )
 

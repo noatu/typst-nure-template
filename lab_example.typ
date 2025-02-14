@@ -1,5 +1,4 @@
 #import "template.typ": *
-#import "@preview/indenta:0.0.3": fix-indent
 
 #show: lab-pz-template.with(
   doctype: "ЛБ",
@@ -22,8 +21,6 @@
   ),
   worknumber: 1,
 )
-
-#show: fix-indent()
 
 #v(-spacing)
 
