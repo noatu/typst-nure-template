@@ -16,13 +16,15 @@
 #let bold(content) = text(weight: "bold")[#content]
 
 /// captioned image with label derived from path:
-/// - `image.png` = @image
-/// - `img/image.png` = @image
-/// - `img/foo/image.png` = @foo_image
-/// - `img/foo/foo_image.png` = @foo_image
-/// if source is specified, it will be appended to the caption as " (за даними `source`)"
-/// otherwise " (рисунок виконано самостійно)" will be appended to the caption
-#let img(path, caption, source: none) = {
+/// - "image.png" = @image
+/// - "img/image.png" = @image
+/// - "img/foo/image.png" = @foo_image
+/// - "img/foo/foo_image.png" = @foo_image
+/// the caption will be modified based on a conditional value:
+/// - `none`: no change
+/// - some value: [#caption (за даними #value)]
+/// - no value: caption + " (рисунок виконано самостійно)"
+#let img(path, caption, ..sink) = {
   let parts = path.split(".").first().split("/")
 
   let label_string = if parts.len() <= 2 or parts.at(-1).starts-with(parts.at(-2)) {
@@ -33,7 +35,13 @@
     parts.at(-2) + "_" + parts.at(-1)
   }.replace(" ", "_")
 
-  caption = [#caption #if source != none [(за даними #source)] else [(рисунок виконано самостійно)]]
+  let caption = if sink.pos().len() == 0 {
+    caption + " (рисунок виконано самостійно)"
+  } else if sink.pos().first() == none {
+    caption
+  } else {
+    [#caption (за даними #sink.pos().first())]
+  }
 
   [#figure(image(path), caption: caption) #label(label_string)]
 }
