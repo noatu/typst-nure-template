@@ -1,7 +1,7 @@
 # Typst Template for NURE Works
 
 > [!WARNING]
-> This branch is using the Typst v0.13.0-rc1. To install it use the following command:
+> This template relies on functionality added in [Typst v0.13.0-rc1](https://github.com/typst/typst/releases/tag/v0.13.0-rc1). To install it use the following command:
 > ```bash
 > cargo install --git https://github.com/typst/typst --branch 0.13 --locked typst-cli
 > ```
