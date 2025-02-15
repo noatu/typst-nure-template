@@ -539,7 +539,7 @@
         )
         [
           #citation.title.
-          _#{citation.author}_. // TODO: remove italic case, issue #7
+          #citation.author.
           URL: #citation.url.value (дата звернення: #date.display("[day].[month].[year]")).
         ]
       } else if citation.type == "Book" [
