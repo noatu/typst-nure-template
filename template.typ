@@ -1,5 +1,26 @@
 
-/// functions {{{1
+// Academic aliases {{{1
+
+/// subject abbreviations to full names
+#let subjects = (
+  "БД": "Бази даних",
+  "ОПНJ": "Основи програмування на Java",
+  "ОС": "Операційні системи",
+  "ПП": "Проектний практикум",
+  "СПМ": "Скриптові мови програмування",
+  "Ф": "Філософія",
+)
+
+/// education program abbreviations to name & number
+#let edu_programs = (
+  "ПЗПІ": (
+    name: "Інженерія програмного забезпечення",
+    number: 121, // NOTE: AFAIK ПЗПІ is not 121 anymore
+  ),
+)
+
+// Template formatting functions {{{1
+
 /// numberless heading
 #let nheading(title) = heading(depth: 1, numbering: none, title)
 
@@ -16,15 +37,33 @@
 /// bold text
 #let bold(content) = text(weight: "bold")[#content]
 
-/// captioned image with label derived from path: {{{2
+/// month name from its number
+#let month_gen(month) = (
+  "січня",
+  "лютого",
+  "березня",
+  "квітня",
+  "травня",
+  "червня",
+  "липня",
+  "серпня",
+  "вересня",
+  "жовтня",
+  "листопада",
+  "грудня",
+).at(month - 1)
+
+// Helper functions {{{1
+
+/// captioned image with label derived from path:
 /// - "image.png" = @image
 /// - "img/image.png" = @image
 /// - "img/foo/image.png" = @foo_image
 /// - "img/foo/foo_image.png" = @foo_image
 /// the caption will be modified based on a conditional value:
 /// - `none`: no change
-/// - some value: [#caption (за даними #value)]
-/// - no value: caption + " (рисунок виконано самостійно)"
+/// - some value: "`caption` (за даними `value`)"
+/// - no value: "`caption` (рисунок виконано самостійно)"
 #let img(path, caption, ..sink) = {
   let parts = path.split(".").first().split("/")
 
@@ -47,43 +86,10 @@
   [#figure(image(path), caption: caption) #label(label_string)]
 }
 
-/// variables {{{1
-/// subjects list {{{2
-#let subjects = (
-  "БД": "Бази даних",
-  "ОПНJ": "Основи програмування на Java",
-  "ОС": "Операційні системи",
-  "ПП": "Проектний практикум",
-  "СПМ": "Скриптові мови програмування",
-  "Ф": "Філософія",
-)
+// Styling {{{1
 
-/// education programs list {{{2
-#let edu_programs = (
-  "ПЗПІ": (
-    name: "Інженерія програмного забезпечення",
-    number: 121,
-  ),
-)
-
-// months {{{2
-#let month_gen(month) = (
-  "січня",
-  "лютого",
-  "березня",
-  "квітня",
-  "травня",
-  "червня",
-  "липня",
-  "серпня",
-  "вересня",
-  "жовтня",
-  "листопада",
-  "грудня",
-).at(month - 1)
-
-/// styling {{{1
-/// spacing between lines {{{2
+// general outlook {{{2
+// spacing between lines
 #let spacing = 0.95em
 
 #let style(it) = {
@@ -215,7 +221,9 @@
   it
 }
 
-/// DSTU 3008:2015 Template for NURE {{{1
+// Coursework template {{{1
+
+/// DSTU 3008:2015 Template for NURE
 /// -> content
 /// - doc (content): Content to apply the template to.
 /// - title (str): Title of the document.
@@ -589,7 +597,9 @@
   }
 }
 
-/// DSTU 3008:2015 Template for NURE {{{1
+// Laboratory work template {{{1
+
+/// DSTU 3008:2015 Template for NURE
 /// -> content
 /// - doc (content): Content to apply the template to.
 /// - doctype ("ЛБ" | "ПЗ"): Document type.
@@ -615,6 +625,7 @@
 
   context counter(heading).update(worknumber - 1)
 
+  // page 1 {{{2
   align(center)[
     МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ \
     ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
