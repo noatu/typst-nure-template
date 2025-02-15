@@ -554,6 +554,7 @@
     }
 
     show enum.item: it => {
+      set par(first-line-indent: 0pt)
       box(width: 1.25cm)
       box(width: 1em + 0.5cm)[#it.number.]
       it.body
@@ -681,4 +682,4 @@
   doc
 }
 
-// vim:sts=2:sw=2:fdl=0:fdm=marker
+// vim:sts=2:sw=2:fdl=0:fdm=marker:cms=/*%s*/
