@@ -60,10 +60,11 @@
 /// - "img/image.png" = @image
 /// - "img/foo/image.png" = @foo_image
 /// - "img/foo/foo_image.png" = @foo_image
-/// the caption will be modified based on a conditional value:
+/// the caption will be modified based on a conditional positional value:
 /// - `none`: no change
 /// - some value: "`caption` (за даними `value`)"
 /// - no value: "`caption` (рисунок виконано самостійно)"
+/// additional named arguments will be passed to original `image` function
 #let img(path, caption, ..sink) = {
   let parts = path.split(".").first().split("/")
 
@@ -83,7 +84,7 @@
     [#caption (за даними #sink.pos().first())]
   }
 
-  [#figure(image(path), caption: caption) #label(label_string)]
+  [#figure(image(path, ..sink.named()), caption: caption) #label(label_string)]
 }
 
 // Styling {{{1
