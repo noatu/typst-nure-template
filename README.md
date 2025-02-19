@@ -1,14 +1,5 @@
 # Typst Template for NURE Works
 
-> [!WARNING]
-> This template relies on functionality added in [Typst v0.13.0-rc1](https://github.com/typst/typst/releases/tag/v0.13.0-rc1). To install it use the following command:
-> ```bash
-> cargo install --git https://github.com/typst/typst --branch 0.13 --locked typst-cli
-> ```
-
-## TODO
-- Add more information about the template.
-
 ## General Info
 
 This project contains two template functions and some utilities for writing NURE works. All functions include documentation comments inside them, so you can explore all possibilities using LSP.
