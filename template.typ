@@ -419,6 +419,7 @@
   // page 3 {{{2
   {
     align(center, bold[КАЛЕНДАРНИЙ ПЛАН])
+    set par(first-line-indent: 0pt)
 
     linebreak()
 
