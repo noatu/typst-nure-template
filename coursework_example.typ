@@ -77,20 +77,14 @@
   ],
 )
 
-#let appendices = (
-  (
-    title: "Приклад звіту 1",
-    content: [test],
-  ),
-  (
-    title: "Приклад звіту 2",
-    content: [test],
-  ),
-  (
-    title: "Приклад звіту 3",
-    content: [test],
-  ),
-)
+#let appendices = [
+  = Приклад звіту 1
+  test
+  = Приклад звіту 2
+  test
+  = Приклад звіту 3
+  test
+]
 
 #show: cw-template.with(
   title: "Інформаційна система «Помічник класного керівника». Керування класом",

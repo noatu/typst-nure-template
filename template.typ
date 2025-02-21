@@ -88,6 +88,8 @@
 }
 
 // Styling {{{1
+/// NOTE: may be wrong
+#let ua_alpha_numbering = "абвгдежиклмнпрстуфхцшщюя".split("") // 0 = "", 1 = "а"
 
 // general outlook {{{2
 // spacing between lines
@@ -115,16 +117,7 @@
   set par(leading: spacing)
 
   // enums and lists {{{2
-  let ua_alph_numbering() = {
-    // INFO: This alphabet is not full, maybe it should be extended or maybe not.
-    //       I cant remember nor find proper formatting rules.
-    //       "абвгґдеєжзиіїйклмнопрстуфхцчшщьюя" (full alphabet)
-
-    let alphabet = "абвгдежиклмнпрстуфхцшщюя".split("")
-    i => { alphabet.at(i) + ")" }
-  }
-
-  set enum(numbering: ua_alph_numbering(), indent: 1.25cm, body-indent: 0.5cm)
+  set enum(numbering: i => { ua_alpha_numbering.at(i) + ")" }, indent: 1.25cm, body-indent: 0.5cm)
   show enum: it => {
     set enum(indent: 0em, numbering: "1)")
     it
@@ -237,7 +230,7 @@
 /// - calendar_plan ( plan_table: (content | str), approval_date: datetime): Calendar plan object.
 /// - abstract (keywords: (str, ), text: (content | str)): Abstract object.
 /// - bib_path path: Path to the bibliography yaml file.
-/// - appendices ((title: str, content: content, ): List of appendices objects.
+/// - appendices (content): Content with appendices.
 #let cw-template(
   doc,
   title: "NONE",
@@ -579,26 +572,39 @@
   {
     counter(heading).update(0)
 
-    for (i, appendix) in appendices.enumerate() [
-      #set heading(
-        numbering: i => [
-          Додаток #"АБВГДЕЖИКЛМНПРСТУФХЦШЩЮЯ".split("").at(i)
-        ],
-      )
+    set heading(
+      numbering: (i, ..nums) => {
+        let char = upper(ua_alpha_numbering.at(i))
+        if nums.pos().len() == 0 { char } else {
+          char + "." + nums.pos().map(str).join(".")
+        }
+      },
+    )
 
-      #show heading: it => {
-        set align(center)
-        set text(size: 14pt, weight: "regular")
+    show heading.where(level: 1): it => {
+      set align(center)
+      set text(size: 14pt, weight: "regular")
 
-        pagebreak(weak: true)
-        bold(upper(counter(heading).display(it.numbering)))
-        linebreak()
-        it.body
-        v(spacing * 2, weak: true)
-      }
-      #heading(appendix.title)
-      #appendix.content
-    ]
+      pagebreak(weak: true)
+      bold("ДОДАТОК " + counter(heading).display()) // TODO: should it.numbering be passed?
+      linebreak()
+      it.body
+      v(spacing * 2, weak: true)
+    }
+
+    show heading.where(level: 2): it => {
+      set text(size: 14pt, weight: "regular")
+
+      v(spacing * 2, weak: true)
+      block(width: 100%, spacing: 0em)[
+        #h(1.25cm)
+        #counter(heading).display() // TODO: should it.numbering be passed?
+        #it.body
+      ]
+      v(spacing * 2, weak: true)
+    }
+
+    appendices
   }
 }
 
