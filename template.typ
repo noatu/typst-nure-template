@@ -15,7 +15,7 @@
 #let edu_programs = (
   "ПЗПІ": (
     name: "Інженерія програмного забезпечення",
-    number: 121, // NOTE: AFAIK ПЗПІ is not 121 anymore
+    number: 121, // TODO: ПЗПІ is "F2" now
   ),
 )
 
@@ -333,18 +333,18 @@
 
   // page 2 {{{2
   {
-    uline([Харківський національний університет радіоелектроніки])
+    uline[Харківський національний університет радіоелектроніки]
 
     linebreak()
     linebreak()
 
     grid(
       columns: (100pt, 1fr),
-      bold([
+      bold[
         Кафедра
         Дисципліна
         Спеціальність
-      ]),
+      ],
       {
         uline(align: left, department_gen)
         linebreak()
@@ -356,7 +356,7 @@
     grid(
       columns: (1fr, 1fr, 1fr),
       gutter: 0.3fr,
-      [#bold("Курс") #uline(2)], [#bold("Група") #uline(author.group)], [#bold("Семестр") #uline(3)],
+      [#bold[Курс] #uline(2)], [#bold[Група] #uline(author.group)], [#bold[Семестр] #uline(3)],
     )
 
     linebreak()
@@ -452,7 +452,7 @@
 
   // page 4 {{{2
   [
-    #align(center, bold([РЕФЕРАТ])) \
+    #align(center, bold[РЕФЕРАТ]) \
 
     #context [
       #let pages = counter(page).final().at(0)
@@ -465,10 +465,10 @@
 
       #let counters = ()
 
-      #if pages != 0 { counters.push([#pages с.]) }
-      #if tables != 0 { counters.push([#tables табл.]) }
-      #if images != 0 { counters.push([#images рис.]) }
-      #if bibs != 0 { counters.push([#bibs джерел]) }
+      #if pages != 0 { counters.push[#pages с.] }
+      #if tables != 0 { counters.push[#tables табл.] }
+      #if images != 0 { counters.push[#images рис.] }
+      #if bibs != 0 { counters.push[#bibs джерел] }
 
       Пояснювальна записка до курсової роботи: #counters.join(", ").
     ]
@@ -586,7 +586,7 @@
       set text(size: 14pt, weight: "regular")
 
       pagebreak(weak: true)
-      bold("ДОДАТОК " + counter(heading).display()) // TODO: should it.numbering be passed?
+      bold[ДОДАТОК #counter(heading).display(it.numbering)]
       linebreak()
       it.body
       v(spacing * 2, weak: true)
@@ -598,7 +598,7 @@
       v(spacing * 2, weak: true)
       block(width: 100%, spacing: 0em)[
         #h(1.25cm)
-        #counter(heading).display() // TODO: should it.numbering be passed?
+        #counter(heading).display(it.numbering)
         #it.body
       ]
       v(spacing * 2, weak: true)

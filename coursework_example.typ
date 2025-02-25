@@ -79,11 +79,17 @@
 
 #let appendices = [
   = Приклад звіту 1
-  test
+  #v(-spacing)
+  == Частина 1
+  #lorem(100)
+  == Частина2
+  #lorem(200)
+
   = Приклад звіту 2
-  test
+  #lorem(200)
+
   = Приклад звіту 3
-  test
+  #lorem(200)
 ]
 
 #show: cw-template.with(
@@ -99,3 +105,16 @@
   bib_path: "bibl.yml",
   appendices: appendices,
 )
+
+= Моделювання
+#lorem(250)
+
+= Імплементація
+#v(-spacing)
+== Підоготовка
+#lorem(200)
+== Процес
+#lorem(500)
+
+= Тестування
+#lorem(300)
