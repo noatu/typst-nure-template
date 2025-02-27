@@ -197,6 +197,18 @@
     v(spacing * 2, weak: true)
   }
 
+  show heading.where(level: 3): it => {
+    set text(size: 14pt, weight: "regular")
+
+    v(spacing * 2, weak: true)
+    block(width: 100%, spacing: 0em)[
+      #h(1.25cm)
+      #counter(heading).display(it.numbering)
+      #it.body
+    ]
+    v(spacing * 2, weak: true)
+  }
+
   // listings {{{2
   show raw: it => {
     let new_spacing = 0.5em
