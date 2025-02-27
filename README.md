@@ -36,9 +36,10 @@ To use the template, include it in your project and utilize the provided functio
 #show: lab-pz-template.with(
     title: "Some title",
 )
+// this template automatically inserts a `=title`
 
 // Write your content
-#v(-spacing)
+#v(-spacing) // remove spacing between headings
 == Purpose
 Some text
 ```
