@@ -1,0 +1,11 @@
+[package]
+name = "nure"
+version = "0.0.0"
+entrypoint = "template.typ"
+authors = ["linerds"]
+license = "GPL-3.0"
+description = "Typst NURE package"
+
+[template]
+path = "template"
+entrypoint = "lab.typ"
