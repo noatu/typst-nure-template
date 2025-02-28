@@ -26,11 +26,22 @@ This template:
 
 ## Usage
 
-To use the template, include it in your project and utilize the provided functions:
+### As a local typst package
+1. Clone this repository into ~/.local/share/typst/packages/:
+```bash
+git clone https://gitea.linerds.us/pencelheimer/typst_nure_template.git ~/.local/share/typst/packages/nure_template/0.0.0
+```
+2. Init your project with Typst:
+```bash
+typst init @local/nure_template:0.0.0 project-name
+```
+
+### As a file in your project
+Include lib.typ in your project and utilize the provided functions:
 
 ```typst
 // Import the template
-#import "path/to/template.typ": *
+#import "lib.typ": *
 
 // Setup the document
 #show: lab-pz-template.with(
