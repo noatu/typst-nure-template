@@ -1,4 +1,4 @@
-#import "template.typ": *
+#import "@local/nure:0.0.0": *
 
 #show: lab-pz-template.with(
   doctype: "ЛБ",
