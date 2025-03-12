@@ -64,12 +64,24 @@ Some text
 
 ### Example Project Structure
 ```
-project-folder/
-├── main.typ
-├── template.typ
-├── images/
-│   ├── figure1.png
-│   ├── figure2.png
-│   ├── ...
-├── ...
+project/
+├── main.typ -- for importing, configuration and boilerplate
+├── src/
+│   ├── intro.typ
+│   ├── chapter1.typ
+│   ├── chapter2.typ
+│   └── ...
+├── figures/
+│   ├── chapter1/
+│   │   ├── figure1.png
+│   │   ├── figure2.png
+│   │   ├── figure3.png
+│   │   └── ...
+│   ├── chapter2/
+│   │   ├── figure1.png
+│   │   ├── figure2.png
+│   │   ├── figure3.png
+│   │   └── ...
+│   └── ...
+└── ...
 ```
