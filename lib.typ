@@ -739,7 +739,6 @@
           mentor.gender == "m"
         ) [Перевірив:\ ] else [Перевірилa:\ ]
         [
-          #let mentor = mentors.at(0)
           #mentor.degree\
           #mentor.name\
         ]
