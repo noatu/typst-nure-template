@@ -4,6 +4,7 @@
 /// subject abbreviations to full names
 #let subjects = (
   "БД": "Бази даних",
+  "ОТК": "Основи теорії кіл",
   "ОПНJ": "Основи програмування на Java",
   "ОС": "Операційні системи",
   "ПП": "Проектний практикум",
@@ -17,6 +18,10 @@
     name: "Інженерія програмного забезпечення",
     number: 121, // TODO: ПЗПІ is "F2" now
   ),
+  "КУІБ": (
+    name: "Управління інформаційною безпекою",
+    number: 125,
+  ),
 )
 
 // Template formatting functions {{{1
@@ -25,7 +30,10 @@
 #let nheading(title) = heading(depth: 1, numbering: none, title)
 
 /// fill horizontal space with a box and not an empty space
-#let hfill(width) = box(width: width, repeat(" ")) // NOTE: This is a HAIR SPACE (U+200A), not a regular space
+#let hfill(width) = box(
+  width: width,
+  repeat(" "),
+) // NOTE: This is a HAIR SPACE (U+200A), not a regular space
 
 /// make underlined cell with filled value
 #let uline(align: center, content) = underline[
@@ -68,7 +76,9 @@
 #let img(path, caption, ..sink) = {
   let parts = path.split(".").first().split("/")
 
-  let label_string = if parts.len() <= 2 or parts.at(-1).starts-with(parts.at(-2)) {
+  let label_string = if (
+    parts.len() <= 2 or parts.at(-1).starts-with(parts.at(-2))
+  ) {
     // ("image",), (_, "image") and (.., "img", "img_image")
     parts.last()
   } else {
@@ -107,7 +117,12 @@
     },
   )
 
-  set text(font: ("Times New Roman", "Liberation Serif"), size: 14pt, hyphenate: false, lang: "uk")
+  set text(
+    font: ("Times New Roman", "Liberation Serif"),
+    size: 14pt,
+    hyphenate: false,
+    lang: "uk",
+  )
   set par(justify: true, first-line-indent: (amount: 1.25cm, all: true))
   set underline(evade: false)
 
@@ -117,7 +132,11 @@
   set par(leading: spacing)
 
   // enums and lists {{{2
-  set enum(numbering: i => { ua_alpha_numbering.at(i) + ")" }, indent: 1.25cm, body-indent: 0.5cm)
+  set enum(
+    numbering: i => { ua_alpha_numbering.at(i) + ")" },
+    indent: 1.25cm,
+    body-indent: 0.5cm,
+  )
   show enum: it => {
     set enum(indent: 0em, numbering: "1)")
     it
@@ -144,8 +163,20 @@
     counter(figure.where(kind: raw)).update(0)
     it
   }
-  set math.equation(numbering: (..num) => numbering("(1.1)", counter(heading).get().at(0), num.pos().first()))
-  set figure(numbering: (..num) => numbering("1.1", counter(heading).get().at(0), num.pos().first()))
+  set math.equation(
+    numbering: (..num) => numbering(
+      "(1.1)",
+      counter(heading).get().at(0),
+      num.pos().first(),
+    ),
+  )
+  set figure(
+    numbering: (..num) => numbering(
+      "1.1",
+      counter(heading).get().at(0),
+      num.pos().first(),
+    ),
+  )
 
   // appearance of references to images and tables {{{2
   set ref(
@@ -368,7 +399,9 @@
     grid(
       columns: (1fr, 1fr, 1fr),
       gutter: 0.3fr,
-      [#bold[Курс] #uline(2)], [#bold[Група] #uline(author.group)], [#bold[Семестр] #uline(3)],
+      [#bold[Курс] #uline(2)],
+      [#bold[Група] #uline(author.group)],
+      [#bold[Семестр] #uline(3)],
     )
 
     linebreak()
@@ -489,18 +522,27 @@
 
     #{
       let keywords = abstract.keywords.map(upper)
-      let is_cyrillic = word => word.split("").any(char => ("А" <= char and char <= "я"))
+      let is_cyrillic = word => word
+        .split("")
+        .any(char => ("А" <= char and char <= "я"))
 
       let n = keywords.len()
       for i in range(n) {
         for j in range(0, n - i - 1) {
           if (
-            (not is_cyrillic(keywords.at(j)) and is_cyrillic(keywords.at(j + 1)))
+            (
+              not is_cyrillic(keywords.at(j))
+                and is_cyrillic(keywords.at(j + 1))
+            )
               or (
-                is_cyrillic(keywords.at(j)) == is_cyrillic(keywords.at(j + 1)) and keywords.at(j) > keywords.at(j + 1)
+                is_cyrillic(keywords.at(j)) == is_cyrillic(keywords.at(j + 1))
+                  and keywords.at(j) > keywords.at(j + 1)
               )
           ) {
-            (keywords.at(j), keywords.at(j + 1)) = (keywords.at(j + 1), keywords.at(j))
+            (keywords.at(j), keywords.at(j + 1)) = (
+              keywords.at(j + 1),
+              keywords.at(j),
+            )
           }
         }
       }
@@ -571,7 +613,10 @@
     }
 
     context {
-      for (i, citation) in query(ref.where(element: none)).map(r => str(r.target)).dedup().enumerate() {
+      for (i, citation) in query(ref.where(element: none))
+        .map(r => str(r.target))
+        .dedup()
+        .enumerate() {
         enum.item(
           i + 1,
           format-entry(bib_data.at(citation)),
@@ -631,7 +676,7 @@
 /// - department_gen (str): Department name in genitive form.
 /// - worknumber (int): Number of the work, can be omitted.
 /// - authors ((name: str, full_name_gen: str, variant: int, group: str, gender: str),): List of Authors dicts.
-/// - mentor (name: str, gender: str, degree: str): Mentors objects.
+/// - mentors (name: str, gender: str or none, degree: str): Mentors objects.
 #let lab-pz-template(
   doc,
   doctype: "NONE",
@@ -640,7 +685,7 @@
   department_gen: "Програмної інженерії",
   worknumber: 1,
   authors: (),
-  mentor: (),
+  mentors: (),
 ) = {
   set document(title: title, author: authors.at(0).name)
 
@@ -688,9 +733,25 @@
       #colbreak()
       #set align(right)
 
-      #if mentor.gender == "m" { [Перевірив:\ ] } else { [Перевірила:\ ] }
-      #mentor.degree #if mentor.degree.len() >= 15 [\ ]
-      #mentor.name\
+      #if mentors.len() == 1 {
+        let mentor = mentors.at(0)
+        if mentor.gender == none [Перевірили:\ ] else if (
+          mentor.gender == "m"
+        ) [Перевірив:\ ] else [Перевірилa:\ ]
+        [
+          #let mentor = mentors.at(0)
+          #mentor.degree\
+          #mentor.name\
+        ]
+      } else [
+        Перевірили:\
+        #for mentor in mentors {
+          [
+            #mentor.degree\
+            #mentor.name\
+          ]
+        }
+      ]
     ]
 
     #v(1fr)
