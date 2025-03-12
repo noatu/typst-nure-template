@@ -15,14 +15,16 @@
 /// education program abbreviations to name & number
 #let edu_programs = (
   "ПЗПІ": (
+    name: "ПЗПІ", // i don't like it
+    name-long: "Інженерія програмного забезпечення",
     department_gen: "Програмної інженерії",
-    name: "Інженерія програмного забезпечення",
-    number: 121, // TODO: ПЗПІ is "F2" now
+    code: 121, // TODO: ПЗПІ is "F2" now
   ),
   "КУІБ": (
+    name: "КУІБ", // i don't like it
+    name-long: "Управління інформаційною безпекою",
     department_gen: "Інфокомунікацій",
-    name: "Управління інформаційною безпекою",
-    number: 125,
+    code: 125,
   ),
 )
 
@@ -393,7 +395,7 @@
         linebreak()
         uline(align: left, subjects.at(subject_short))
         linebreak()
-        uline(align: left, [#edu_program.number #edu_program.name])
+        uline(align: left, [#edu_program.code #edu_program.name-long])
       },
     )
     grid(
@@ -667,16 +669,16 @@
 /// - subject_short (str): Subject short name.
 /// - worknumber (int): Number of the work, can be omitted.
 /// - authors ((name: str, full_name_gen: str, variant: int, group: str, gender: str),): List of Authors dicts.
-/// - mentors (name: str, gender: str or none, degree: str): Mentors objects.
-#let lab-pz-template(
+/// - mentors ((name: str, degree: str, gender: str or none): Mentors objects.
+#let pz-lb-template(
   doc,
-  doctype: "NONE",
-  edu_program_short: "ПЗПІ",
-  title: "NONE",
-  subject_short: "NONE",
+  doctype: none,
+  edu_program_short: edu_programs.keys().first(),
+  title: none,
+  subject_short: none,
   worknumber: 1,
   authors: (),
-  mentors: (gender: none),
+  mentors: (),
 ) = {
   set document(title: title, author: authors.at(0).name)
 
@@ -713,7 +715,7 @@
         let author = authors.at(0)
         if author.gender == "m" [Виконав:\ ] else [Виконала:\ ]
         [
-          ст. гр. #author.edu_program\-#author.group\
+          ст. гр. #edu_program.name\-#author.group\
           #author.name\
         ]
         if author.variant != none [Варіант: №#author.variant]

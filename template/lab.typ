@@ -1,6 +1,6 @@
 #import "@local/nure:0.0.0": *
 
-#show: lab-pz-template.with(
+#show: pz-lb-template.with(
   doctype: "ЛБ",
   edu_program_short: "ПЗПІ",
   title: "Інформаційна система «Помічник класного керівника». Керування класом",

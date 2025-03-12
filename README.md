@@ -40,12 +40,16 @@ typst init @local/nure:0.0.0 project-name
 Include lib.typ in your project and utilize the provided functions:
 
 ```typst
-// Import the template
-#import "lib.typ": *
+// Import the template either from a local package...
+#import "@local/nure:0.0.0": *
+// ...or by importing a lib.typ directly from a project's root directory
+// #import "lib.typ": *
 
 // Setup the document
-#show: lab-pz-template.with(
+#show: pz-lb-template.with(
     title: "Some title",
+    // etc: "and so on",
+    // ...
 )
 // this template automatically inserts a `=title`
 
