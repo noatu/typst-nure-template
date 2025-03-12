@@ -2,9 +2,9 @@
 
 #show: lab-pz-template.with(
   doctype: "ЛБ",
+  edu_program_short: "ПЗПІ",
   title: "Інформаційна система «Помічник класного керівника». Керування класом",
-  subject_shorthand: "БД",
-  department_gen: "Програмної інженерії",
+  subject_short: "БД",
   authors: (
     (
       name: "Ситник Є. С.",
@@ -14,10 +14,8 @@
       gender: "m",
     ),
   ),
-  mentor: (
-    name: "Черепанова Ю. Ю.",
-    gender: "f",
-    degree: "Ст. викл. каф. ПІ",
+  mentors: (
+    (name: "Черепанова Ю. Ю.", gender: "f", degree: "Ст. викл. каф. ПІ"),
   ),
   worknumber: 1,
 )

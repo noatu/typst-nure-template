@@ -15,10 +15,12 @@
 /// education program abbreviations to name & number
 #let edu_programs = (
   "ПЗПІ": (
+    department_gen: "Програмної інженерії",
     name: "Інженерія програмного забезпечення",
     number: 121, // TODO: ПЗПІ is "F2" now
   ),
   "КУІБ": (
+    department_gen: "Інфокомунікацій",
     name: "Управління інформаційною безпекою",
     number: 125,
   ),
@@ -264,11 +266,10 @@
 /// -> content
 /// - doc (content): Content to apply the template to.
 /// - title (str): Title of the document.
-/// - subject_shorthand (str): Subject short name.
-/// - department_gen (str): Department name in genitive form.
+/// - subject_short (str): Subject short name.
 /// - authors ((name: str, full_name_gen: str, variant: int, group: str, gender: str),): List of Authors dicts.
 /// - mentors ((name: str, gender: str, degree: str),): List of mentors dicts.
-/// - edu_program_shorthand (str): Education program shorthand.
+/// - edu_program_short (str): Education program shorthand.
 /// - task_list (done_date: datetime, initial_date: datetime, source: (content | str), content: (content | str), graphics: (content | str)): Task list object.
 /// - calendar_plan ( plan_table: (content | str), approval_date: datetime): Calendar plan object.
 /// - abstract (keywords: (str, ), text: (content | str)): Abstract object.
@@ -277,11 +278,10 @@
 #let cw-template(
   doc,
   title: "NONE",
-  subject_shorthand: "NONE",
-  department_gen: "Програмної інженерії",
+  subject_short: "NONE",
   author: (),
   mentors: (),
-  edu_program_shorthand: "ПЗПІ",
+  edu_program_short: "ПЗПІ",
   task_list: (),
   calendar_plan: (),
   abstract: (),
@@ -304,7 +304,7 @@
 
 
   let head_mentor = mentors.at(0)
-  let edu_program = edu_programs.at(edu_program_shorthand)
+  let edu_program = edu_programs.at(edu_program_short)
 
   // page 1 {{{2
   [
@@ -323,7 +323,7 @@
 
     ДО КУРСОВОЇ РОБОТИ
 
-    з дисципліни: "#subjects.at(subject_shorthand, default: "NONE")"
+    з дисципліни: "#subjects.at(subject_short, default: "NONE")"
 
     Тема роботи: "#title"
 
@@ -389,9 +389,9 @@
         Спеціальність
       ],
       {
-        uline(align: left, department_gen)
+        uline(align: left, edu_program.department_gen)
         linebreak()
-        uline(align: left, subjects.at(subject_shorthand))
+        uline(align: left, subjects.at(subject_short))
         linebreak()
         uline(align: left, [#edu_program.number #edu_program.name])
       },
@@ -671,25 +671,27 @@
 /// -> content
 /// - doc (content): Content to apply the template to.
 /// - doctype ("ЛБ" | "ПЗ"): Document type.
+/// - edu_program_short (str): Education program shorthand.
 /// - title (str): Title of the document.
-/// - subject_shorthand (str): Subject short name.
-/// - department_gen (str): Department name in genitive form.
+/// - subject_short (str): Subject short name.
 /// - worknumber (int): Number of the work, can be omitted.
 /// - authors ((name: str, full_name_gen: str, variant: int, group: str, gender: str),): List of Authors dicts.
 /// - mentors (name: str, gender: str or none, degree: str): Mentors objects.
 #let lab-pz-template(
   doc,
   doctype: "NONE",
+  edu_program_short: "ПЗПІ",
   title: "NONE",
-  subject_shorthand: "NONE",
-  department_gen: "Програмної інженерії",
+  subject_short: "NONE",
   worknumber: 1,
   authors: (),
-  mentors: (),
+  mentors: (gender: none),
 ) = {
   set document(title: title, author: authors.at(0).name)
 
   show: style
+
+  let edu_program = edu_programs.at(edu_program_short)
 
   context counter(heading).update(worknumber - 1)
 
@@ -699,7 +701,7 @@
     ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
 
     \ \
-    Кафедра #department_gen
+    Кафедра #edu_program.department_gen
 
     \ \ \
     Звіт \
@@ -707,7 +709,7 @@
     #if doctype == "ЛБ" [лабораторної роботи] else [практичної роботи]
     #if worknumber != none [№ #worknumber]
 
-    з дисципліни: "#subjects.at(subject_shorthand, default: "UNLNOWN SUBJECT, PLEASE OPEN AN ISSUE")"
+    з дисципліни: "#subjects.at(subject_short, default: "UNKNOWN SUBJECT, PLEASE OPEN AN ISSUE")"
 
     з теми: "#title"
 
@@ -720,7 +722,7 @@
         let author = authors.at(0)
         if author.gender == "m" [Виконав:\ ] else [Виконала:\ ]
         [
-          ст. гр. #author.group\
+          ст. гр. #author.edu_program\-#author.group\
           #author.name\
         ]
         if author.variant != none [Варіант: №#author.variant]
