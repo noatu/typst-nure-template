@@ -399,9 +399,7 @@
     grid(
       columns: (1fr, 1fr, 1fr),
       gutter: 0.3fr,
-      [#bold[Курс] #uline(2)],
-      [#bold[Група] #uline(author.group)],
-      [#bold[Семестр] #uline(3)],
+      [#bold[Курс] #uline(2)], [#bold[Група] #uline(author.group)], [#bold[Семестр] #uline(3)],
     )
 
     linebreak()
@@ -522,21 +520,17 @@
 
     #{
       let keywords = abstract.keywords.map(upper)
-      let is_cyrillic = word => word
-        .split("")
-        .any(char => ("А" <= char and char <= "я"))
+      let is_cyrillic = word => word.split("").any(char => ("А" <= char and char <= "я"))
 
       let n = keywords.len()
       for i in range(n) {
         for j in range(0, n - i - 1) {
           if (
             (
-              not is_cyrillic(keywords.at(j))
-                and is_cyrillic(keywords.at(j + 1))
+              not is_cyrillic(keywords.at(j)) and is_cyrillic(keywords.at(j + 1))
             )
               or (
-                is_cyrillic(keywords.at(j)) == is_cyrillic(keywords.at(j + 1))
-                  and keywords.at(j) > keywords.at(j + 1)
+                is_cyrillic(keywords.at(j)) == is_cyrillic(keywords.at(j + 1)) and keywords.at(j) > keywords.at(j + 1)
               )
           ) {
             (keywords.at(j), keywords.at(j + 1)) = (
@@ -613,10 +607,7 @@
     }
 
     context {
-      for (i, citation) in query(ref.where(element: none))
-        .map(r => str(r.target))
-        .dedup()
-        .enumerate() {
+      for (i, citation) in query(ref.where(element: none)).map(r => str(r.target)).dedup().enumerate() {
         enum.item(
           i + 1,
           format-entry(bib_data.at(citation)),
