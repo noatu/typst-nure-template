@@ -9,7 +9,7 @@ This project contains two template functions and some utilities for writing NURE
 #### `pz-lb-template` - For Laboratory and Practical Works
 This template:
 - Sets up document styles;
-- Formats the title page according to NURE guidelines.
+- Formats the title page according to NURE/DSTU guidelines.
 
 #### `cw-template` - For Course Works
 This template:
@@ -36,14 +36,15 @@ git clone https://gitea.linerds.us/pencelheimer/typst_nure_template.git ~/.local
 typst init @local/nure:0.0.0 project-name
 ```
 
-### As a file in your project
-Include lib.typ in your project and utilize the provided functions:
+### As a standalone file
+Copy `lib.typ` to your project's root directory.
 
+### In your project
 ```typst
 // Import the template either from a local package...
 #import "@local/nure:0.0.0": *
-// ...or by importing a lib.typ directly from a project's root directory
-// #import "lib.typ": *
+// ...or by importing a lib.typ directly
+// #import "/lib.typ": *
 
 // Setup the document
 #show: pz-lb-template.with(
@@ -53,10 +54,16 @@ Include lib.typ in your project and utilize the provided functions:
 )
 // this template automatically inserts a `=title`
 
-// Write your content
+// Write your content...
 #v(-spacing) // remove spacing between headings
 == Purpose
 Some text
+
+// ...or include your modules
+// NOTE: you have to import a package or a lib.typ in each module.
+#include "src/intro.typ"
+#include "src/chapter1.typ"
+#include "src/chapter2.typ"
 ```
 
 ### Notes:

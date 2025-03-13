@@ -10,18 +10,17 @@
   "ПП": "Проектний практикум",
   "СПМ": "Скриптові мови програмування",
   "Ф": "Філософія",
+  "ФІЗ": "Фізика",
 )
 
 /// education program abbreviations to name & number
 #let edu_programs = (
   "ПЗПІ": (
-    name: "ПЗПІ", // i don't like it
     name-long: "Інженерія програмного забезпечення",
     department_gen: "Програмної інженерії",
     code: 121, // TODO: ПЗПІ is "F2" now
   ),
   "КУІБ": (
-    name: "КУІБ", // i don't like it
     name-long: "Управління інформаційною безпекою",
     department_gen: "Інфокомунікацій",
     code: 125,
@@ -268,10 +267,10 @@
 /// -> content
 /// - doc (content): Content to apply the template to.
 /// - title (str): Title of the document.
-/// - subject_short (str): Subject short name.
+/// - subject (str): Subject short name.
 /// - authors ((name: str, full_name_gen: str, variant: int, group: str, gender: str),): List of Authors dicts.
 /// - mentors ((name: str, gender: str, degree: str),): List of mentors dicts.
-/// - edu_program_short (str): Education program shorthand.
+/// - edu_program (str): Education program shorthand.
 /// - task_list (done_date: datetime, initial_date: datetime, source: (content | str), content: (content | str), graphics: (content | str)): Task list object.
 /// - calendar_plan ( plan_table: (content | str), approval_date: datetime): Calendar plan object.
 /// - abstract (keywords: (str, ), text: (content | str)): Abstract object.
@@ -279,11 +278,11 @@
 /// - appendices (content): Content with appendices.
 #let cw-template(
   doc,
-  title: "NONE",
-  subject_short: "NONE",
+  title: none,
+  subject: none,
   author: (),
   mentors: (),
-  edu_program_short: "ПЗПІ",
+  edu_program: none,
   task_list: (),
   calendar_plan: (),
   abstract: (),
@@ -306,7 +305,7 @@
 
 
   let head_mentor = mentors.at(0)
-  let edu_program = edu_programs.at(edu_program_short)
+  let edu_prog = edu_programs.at(edu_program)
 
   // page 1 {{{2
   [
@@ -317,7 +316,7 @@
 
     \
 
-    Кафедра Програмної інженерії
+    Кафедра #edu_prog.department_gen
 
     \
 
@@ -325,7 +324,7 @@
 
     ДО КУРСОВОЇ РОБОТИ
 
-    з дисципліни: "#subjects.at(subject_short, default: "NONE")"
+    з дисципліни: "#subjects.at(subject, default: "NONE")"
 
     Тема роботи: "#title"
 
@@ -391,11 +390,11 @@
         Спеціальність
       ],
       {
-        uline(align: left, edu_program.department_gen)
+        uline(align: left, edu_prog.department_gen)
         linebreak()
-        uline(align: left, subjects.at(subject_short))
+        uline(align: left, subjects.at(subject))
         linebreak()
-        uline(align: left, [#edu_program.code #edu_program.name-long])
+        uline(align: left, [#edu_prog.code #edu_prog.name-long])
       },
     )
     grid(
@@ -664,19 +663,19 @@
 /// -> content
 /// - doc (content): Content to apply the template to.
 /// - doctype ("ЛБ" | "ПЗ"): Document type.
-/// - edu_program_short (str): Education program shorthand.
+/// - edu_program (str): Education program shorthand.
 /// - title (str): Title of the document.
-/// - subject_short (str): Subject short name.
-/// - worknumber (int): Number of the work, can be omitted.
-/// - authors ((name: str, full_name_gen: str, variant: int, group: str, gender: str),): List of Authors dicts.
-/// - mentors ((name: str, degree: str, gender: str or none): Mentors objects.
+/// - subject (str): Subject shorthand.
+/// - authors ((name: str, full_name_gen: str, group: str, gender: str, variant: int or none),): List of authors.
+/// - mentors ((name: str, degree: str, gender: str or none),): List of mentors.
+/// - worknumber (int or none): Number of the work. Optional.
 #let pz-lb-template(
   doc,
   doctype: none,
-  edu_program_short: edu_programs.keys().first(),
+  edu_program: none,
   title: none,
-  subject_short: none,
-  worknumber: 1,
+  subject: none,
+  worknumber: none,
   authors: (),
   mentors: (),
 ) = {
@@ -684,25 +683,24 @@
 
   show: style
 
-  let edu_program = edu_programs.at(edu_program_short)
-
-  context counter(heading).update(worknumber - 1)
-
   // page 1 {{{2
   align(center)[
     МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ \
     ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
 
     \ \
-    Кафедра #edu_program.department_gen
+    Кафедра #edu_programs.at(edu_program).department_gen
 
     \ \ \
     Звіт \
     з
     #if doctype == "ЛБ" [лабораторної роботи] else [практичної роботи]
-    #if worknumber != none [№ #worknumber]
+    #if worknumber != none {
+      context counter(heading).update(worknumber - 1)
+      [№#worknumber]
+    }
 
-    з дисципліни: "#subjects.at(subject_short, default: "UNKNOWN SUBJECT, PLEASE OPEN AN ISSUE")"
+    з дисципліни: "#subjects.at(subject, default: "UNKNOWN SUBJECT, PLEASE OPEN AN ISSUE")"
 
     з теми: "#title"
 
@@ -715,7 +713,7 @@
         let author = authors.at(0)
         if author.gender == "m" [Виконав:\ ] else [Виконала:\ ]
         [
-          ст. гр. #edu_program.name\-#author.group\
+          ст. гр. #edu_program\-#author.group\
           #author.name\
         ]
         if author.variant != none [Варіант: №#author.variant]
