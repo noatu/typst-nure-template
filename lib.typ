@@ -1,7 +1,7 @@
 
 // Academic aliases {{{1
 
-#let universities = yaml("universities.yaml")
+#let universities = yaml("config/universities.yaml")
 
 // Template formatting functions {{{1
 
@@ -286,14 +286,14 @@
 
 
   let head_mentor = mentors.at(0)
-  let edu_prog = universities.at(university).edu_programs.at(edu_program)
-  let uni = universities.at(university).name
+  let uni = universities.at(university)
+  let edu_prog = uni.edu_programs.at(edu_program)
 
   // page 1 {{{2
   [
     #set align(center)
     МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ\
-    #upper(uni)
+    #upper(uni.name)
 
     \
 
@@ -303,7 +303,7 @@
 
     ПОЯСНЮВАЛЬНА ЗАПИСКА\
     ДО КУРСОВОЇ РОБОТИ\
-    з дисципліни: "#universities.at(university).subjects.at(subject, default: "NONE")"\
+    з дисципліни: "#uni.subjects.at(subject, default: "NONE")"\
     Тема роботи: "#title"
 
     \ \ \
@@ -355,7 +355,7 @@
 
   // page 2 {{{2
   {
-    uline[#uni]
+    uline[#uni.name]
 
     linebreak()
     linebreak()
@@ -370,7 +370,7 @@
       {
         uline(align: left, edu_prog.department_gen)
         linebreak()
-        uline(align: left, universities.at(university).subjects.at(subject))
+        uline(align: left, uni.subjects.at(subject))
         linebreak()
         uline(align: left, [#edu_prog.code #edu_prog.name_long])
       },
@@ -665,13 +665,14 @@
   show: style
 
   let uni = universities.at(university)
+  let edu_prog = uni.edu_programs.at(edu_program)
   // page 1 {{{2
   align(center)[
     МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ \
-    #upper(uni)
+    #upper(uni.name)
 
     \ \
-    Кафедра #edu_programs.at(edu_program).department_gen
+    Кафедра #edu_prog.department_gen
 
     \ \ \
     Звіт \
@@ -682,7 +683,7 @@
       [№#worknumber]
     }
 
-    з дисципліни: "#subjects.at(subject, default: "UNKNOWN SUBJECT, PLEASE OPEN AN ISSUE")"
+    з дисципліни: "#uni.subjects.at(subject, default: "UNKNOWN SUBJECT, PLEASE OPEN AN ISSUE")"
 
     з теми: "#title"
 
