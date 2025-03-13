@@ -29,11 +29,11 @@ This template:
 ### As a local typst package
 1. Clone this repository into ~/.local/share/typst/packages/:
 ```bash
-git clone https://gitea.linerds.us/pencelheimer/typst_nure_template.git ~/.local/share/typst/packages/local/nure/0.0.0
+git clone https://gitea.linerds.us/pencelheimer/typst_nure_template.git ~/.local/share/typst/packages/local/nure/0.1.0
 ```
 2. Init your project with Typst:
 ```bash
-typst init @local/nure:0.0.0 project-name
+typst init @local/nure:0.1.0 project-name
 ```
 
 ### As a standalone file
@@ -42,7 +42,7 @@ Copy `lib.typ` to your project's root directory.
 ### In your project
 ```typst
 // Import the template either from a local package...
-#import "@local/nure:0.0.0": *
+#import "@local/nure:0.1.0": *
 // ...or by importing a lib.typ directly
 // #import "/lib.typ": *
 
