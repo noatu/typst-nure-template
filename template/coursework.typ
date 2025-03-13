@@ -3,6 +3,8 @@
 #let author = (
   name: "Ситник Є. С.",
   full_name_gen: "Ситника Єгора Сергійовича",
+  course: 2,
+  semester: 3,
   variant: 13,
   group: "23-2",
   gender: "m",

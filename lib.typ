@@ -10,6 +10,7 @@
   "ОС": "Операційні системи",
   "ОТК": "Основи теорії кіл",
   "ПП": "Проектний практикум",
+  "ПРОГ": "Програмування",
   "СПМ": "Скриптові мови програмування",
   "УФМ": "Українське фахове мовлення",
   "Ф": "Філософія",
@@ -254,7 +255,11 @@
       spacing: new_spacing,
       leading: new_spacing,
     )
-    set text(size: 11pt, font: "Courier New", weight: "semibold")
+    set text(
+      size: 11pt,
+      font: "Courier New",
+      weight: "semibold",
+    )
 
     v(spacing * 2.5, weak: true)
     pad(it, left: 1.25cm)
@@ -271,7 +276,7 @@
 /// - doc (content): Content to apply the template to.
 /// - title (str): Title of the document.
 /// - subject (str): Subject short name.
-/// - authors ((name: str, full_name_gen: str, variant: int, group: str, gender: str),): List of authors.
+/// - authors ((name: str, full_name_gen: str, variant: int, course: int, semester: int, group: str, gender: str),): List of authors.
 /// - mentors ((name: str, degree: str),): List of mentors.
 /// - edu_program (str): Education program shorthand.
 /// - task_list (done_date: datetime, initial_date: datetime, source: (content | str), content: (content | str), graphics: (content | str)): Task list object.
@@ -289,7 +294,7 @@
   task_list: (),
   calendar_plan: (),
   abstract: (),
-  bib_path: "bibl.yml",
+  bib_path: none,
   appendices: (),
 ) = {
   set document(title: title, author: author.name)
@@ -313,8 +318,7 @@
   // page 1 {{{2
   [
     #set align(center)
-    МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ
-
+    МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ\
     ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
 
     \
@@ -323,12 +327,9 @@
 
     \
 
-    ПОЯСНЮВАЛЬНА ЗАПИСКА
-
-    ДО КУРСОВОЇ РОБОТИ
-
-    з дисципліни: "#subjects.at(subject, default: "NONE")"
-
+    ПОЯСНЮВАЛЬНА ЗАПИСКА\
+    ДО КУРСОВОЇ РОБОТИ\
+    з дисципліни: "#subjects.at(subject, default: "NONE")"\
     Тема роботи: "#title"
 
     \ \ \
@@ -336,7 +337,7 @@
     #columns(2, gutter: 4cm)[
       #set align(left)
 
-      #if author.gender == "m" { [Виконав\ ] } else { [Виконала\ ] } ст. гр. #author.group
+      #if author.gender == "m" { [Виконав\ ] } else { [Виконала\ ] } ст. гр. #edu_program\-#author.group
 
       \
       Керівник:\
@@ -403,7 +404,9 @@
     grid(
       columns: (1fr, 1fr, 1fr),
       gutter: 0.3fr,
-      [#bold[Курс] #uline(2)], [#bold[Група] #uline(author.group)], [#bold[Семестр] #uline(3)],
+      [#bold[Курс] #uline(author.course)],
+      [#bold[Група] #uline([#edu_program\-#author.group])],
+      [#bold[Семестр] #uline(author.semester)],
     )
 
     linebreak()
@@ -490,7 +493,7 @@
       [
         #author.name, \
         #head_mentor.degree
-        #head_mentor.name.
+        #head_mentor.name
       ],
     )
 
