@@ -1,6 +1,9 @@
 
 // Academic aliases {{{1
 
+#let universities = (
+  "ХНУРЕ": "Харківський національний університет радіоелектроніки",
+)
 /// subject abbreviations to full names
 #let subjects = (
   "БД": "Бази даних",
@@ -288,6 +291,7 @@
   doc,
   title: none,
   subject: none,
+  university: "ХНУРЕ",
   author: (),
   mentors: (),
   edu_program: none,
@@ -314,12 +318,13 @@
 
   let head_mentor = mentors.at(0)
   let edu_prog = edu_programs.at(edu_program)
+  let uni = universities.at(university)
 
   // page 1 {{{2
   [
     #set align(center)
     МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ\
-    ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
+    #upper(uni)
 
     \
 
@@ -381,7 +386,7 @@
 
   // page 2 {{{2
   {
-    uline[Харківський національний університет радіоелектроніки]
+    uline[#uni]
 
     linebreak()
     linebreak()
@@ -493,7 +498,7 @@
       [
         #author.name, \
         #head_mentor.degree
-        #head_mentor.name
+        #head_mentor.name.
       ],
     )
 
@@ -678,6 +683,7 @@
 #let pz-lb-template(
   doc,
   doctype: none,
+  university: "ХНУРЕ",
   edu_program: none,
   title: none,
   subject: none,
@@ -689,10 +695,11 @@
 
   show: style
 
+  let uni = universities.at(university)
   // page 1 {{{2
   align(center)[
     МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ \
-    ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
+    #upper(uni)
 
     \ \
     Кафедра #edu_programs.at(edu_program).department_gen
