@@ -1,38 +1,7 @@
 
 // Academic aliases {{{1
 
-#let universities = (
-  "ХНУРЕ": "Харківський національний університет радіоелектроніки",
-)
-/// subject abbreviations to full names
-#let subjects = (
-  "БД": "Бази даних",
-  "БЖД": "Безпека життєдіяльності",
-  "ОІМ": "Основи IP-мереж",
-  "ОПНJ": "Основи програмування на Java",
-  "ОС": "Операційні системи",
-  "ОТК": "Основи теорії кіл",
-  "ПП": "Проектний практикум",
-  "ПРОГ": "Програмування",
-  "СПМ": "Скриптові мови програмування",
-  "УФМ": "Українське фахове мовлення",
-  "Ф": "Філософія",
-  "ФІЗ": "Фізика",
-)
-
-/// education program abbreviations to name & number
-#let edu_programs = (
-  "ПЗПІ": (
-    name-long: "Інженерія програмного забезпечення",
-    department_gen: "Програмної інженерії",
-    code: 121, // TODO: ПЗПІ is "F2" now
-  ),
-  "КУІБ": (
-    name-long: "Управління інформаційною безпекою",
-    department_gen: "Інфокомунікацій",
-    code: 125,
-  ),
-)
+#let universities = yaml("universities.yaml")
 
 // Template formatting functions {{{1
 
@@ -260,7 +229,7 @@
     )
     set text(
       size: 11pt,
-      font: "Courier New",
+      font: ("Iosevka NFM", "Courier New"),
       weight: "semibold",
     )
 
@@ -317,8 +286,8 @@
 
 
   let head_mentor = mentors.at(0)
-  let edu_prog = edu_programs.at(edu_program)
-  let uni = universities.at(university)
+  let edu_prog = universities.at(university).edu_programs.at(edu_program)
+  let uni = universities.at(university).name
 
   // page 1 {{{2
   [
@@ -334,7 +303,7 @@
 
     ПОЯСНЮВАЛЬНА ЗАПИСКА\
     ДО КУРСОВОЇ РОБОТИ\
-    з дисципліни: "#subjects.at(subject, default: "NONE")"\
+    з дисципліни: "#universities.at(university).subjects.at(subject, default: "NONE")"\
     Тема роботи: "#title"
 
     \ \ \
@@ -401,9 +370,9 @@
       {
         uline(align: left, edu_prog.department_gen)
         linebreak()
-        uline(align: left, subjects.at(subject))
+        uline(align: left, universities.at(university).subjects.at(subject))
         linebreak()
-        uline(align: left, [#edu_prog.code #edu_prog.name-long])
+        uline(align: left, [#edu_prog.code #edu_prog.name_long])
       },
     )
     grid(
