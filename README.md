@@ -29,7 +29,7 @@ This template:
 ### As a local typst package
 1. Clone this repository into ~/.local/share/typst/packages/:
 ```bash
-git clone https://gitea.linerds.us/unexplrd/typst_nure_template.git ~/.local/share/typst/packages/local/nure/0.1.0
+git clone -b 0.1.0 https://gitea.linerds.us/pencelheimer/typst_nure_template.git ~/.local/share/typst/packages/local/nure/0.1.0
 ```
 2. Init your project with Typst:
 ```bash
