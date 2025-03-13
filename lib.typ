@@ -4,11 +4,14 @@
 /// subject abbreviations to full names
 #let subjects = (
   "БД": "Бази даних",
-  "ОТК": "Основи теорії кіл",
+  "БЖД": "Безпека життєдіяльності",
+  "ОІМ": "Основи IP-мереж",
   "ОПНJ": "Основи програмування на Java",
   "ОС": "Операційні системи",
+  "ОТК": "Основи теорії кіл",
   "ПП": "Проектний практикум",
   "СПМ": "Скриптові мови програмування",
+  "УФМ": "Українське фахове мовлення",
   "Ф": "Філософія",
   "ФІЗ": "Фізика",
 )
@@ -268,8 +271,8 @@
 /// - doc (content): Content to apply the template to.
 /// - title (str): Title of the document.
 /// - subject (str): Subject short name.
-/// - authors ((name: str, full_name_gen: str, variant: int, group: str, gender: str),): List of Authors dicts.
-/// - mentors ((name: str, gender: str, degree: str),): List of mentors dicts.
+/// - authors ((name: str, full_name_gen: str, variant: int, group: str, gender: str),): List of authors.
+/// - mentors ((name: str, degree: str),): List of mentors.
 /// - edu_program (str): Education program shorthand.
 /// - task_list (done_date: datetime, initial_date: datetime, source: (content | str), content: (content | str), graphics: (content | str)): Task list object.
 /// - calendar_plan ( plan_table: (content | str), approval_date: datetime): Calendar plan object.
@@ -400,7 +403,9 @@
     grid(
       columns: (1fr, 1fr, 1fr),
       gutter: 0.3fr,
-      [#bold[Курс] #uline(2)], [#bold[Група] #uline(author.group)], [#bold[Семестр] #uline(3)],
+      [#bold[Курс] #uline(2)],
+      [#bold[Група] #uline(author.group)],
+      [#bold[Семестр] #uline(3)],
     )
 
     linebreak()
@@ -521,17 +526,21 @@
 
     #{
       let keywords = abstract.keywords.map(upper)
-      let is_cyrillic = word => word.split("").any(char => ("А" <= char and char <= "я"))
+      let is_cyrillic = word => word
+        .split("")
+        .any(char => ("А" <= char and char <= "я"))
 
       let n = keywords.len()
       for i in range(n) {
         for j in range(0, n - i - 1) {
           if (
             (
-              not is_cyrillic(keywords.at(j)) and is_cyrillic(keywords.at(j + 1))
+              not is_cyrillic(keywords.at(j))
+                and is_cyrillic(keywords.at(j + 1))
             )
               or (
-                is_cyrillic(keywords.at(j)) == is_cyrillic(keywords.at(j + 1)) and keywords.at(j) > keywords.at(j + 1)
+                is_cyrillic(keywords.at(j)) == is_cyrillic(keywords.at(j + 1))
+                  and keywords.at(j) > keywords.at(j + 1)
               )
           ) {
             (keywords.at(j), keywords.at(j + 1)) = (
@@ -608,7 +617,10 @@
     }
 
     context {
-      for (i, citation) in query(ref.where(element: none)).map(r => str(r.target)).dedup().enumerate() {
+      for (i, citation) in query(ref.where(element: none))
+        .map(r => str(r.target))
+        .dedup()
+        .enumerate() {
         enum.item(
           i + 1,
           format-entry(bib_data.at(citation)),
