@@ -60,10 +60,11 @@ Copy `lib.typ` to your project's root directory.
 Some text
 
 // ...or include your modules
-// NOTE: you have to import a package or a lib.typ in each module.
 #include "src/intro.typ"
 #include "src/chapter1.typ"
 #include "src/chapter2.typ"
+// NOTE: if you want to use variables or utils provided by the package,
+// you have to import the package or a lib.typ inside a module.
 ```
 
 ### Notes:
@@ -72,7 +73,11 @@ Some text
 ### Example Project Structure
 ```
 project/
-├── main.typ -- for importing, configuration and boilerplate
+├── main.typ -- for boilerplate code and importing everything 
+├── config/
+│   ├── doc.yaml -- for things that don't change across works, i.e. author and mentor metadata
+│   ├── universities.yaml -- for user-specific configuration, i.e. education programs and disciplines
+│   └── ...
 ├── src/
 │   ├── intro.typ
 │   ├── chapter1.typ

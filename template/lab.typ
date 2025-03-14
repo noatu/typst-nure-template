@@ -1,24 +1,6 @@
 #import "@local/nure:0.1.0": *
 
-#show: pz-lb-template.with(
-  doctype: "ЛБ",
-  edu_program: "ПЗПІ",
-  subject: "БД",
-  worknumber: 1,
-  title: "Інформаційна система «Помічник класного керівника». Керування класом",
-  authors: (
-    (
-      name: "Ситник Є. С.",
-      full_name_gen: "Ситника Єгора Сергійовича",
-      variant: 13,
-      group: "ПЗПІ-23-2",
-      gender: "m",
-    ),
-  ),
-  mentors: (
-    (name: "Черепанова Ю. Ю.", degree: "Ст. викл. каф. ПІ", gender: "f"),
-  ),
-)
+#show: pz-lb-template.with(..yaml("config/doc.yaml"))
 
 #v(-spacing)
 
