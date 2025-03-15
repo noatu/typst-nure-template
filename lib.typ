@@ -73,7 +73,10 @@
     [#caption (за даними #sink.pos().first())]
   }
 
-  [#figure(image(path, ..sink.named()), caption: caption) #label(label_string)]
+  [#figure(
+      image(path, ..sink.named()),
+      caption: caption,
+    ) #label(label_string)]
 }
 
 // Styling {{{1
@@ -702,8 +705,8 @@
         if author.variant != none [Варіант: №#author.variant]
       } else [
         Виконали:\
-        ст. гр. #authors.at(0).group\
-        #authors.map(a => [ #a.name\ ])
+        ст. гр. #edu_program\-#authors.at(0).group\
+        #for author in authors [#author.name\ ]
       ]
 
       #colbreak()

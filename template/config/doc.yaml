@@ -2,17 +2,6 @@ title: Потiк керування та алгоритмічні структу
 subject: СПМ
 doctype: ЛБ
 worknumber: 2
-edu_program: &EDU ПЗПІ
-university: ХНУРЕ
-authors:
-  - name: Косач. Л. П.
-    full_name_gen: Косач Лариси Петрівни
-    course: 2
-    edu: *EDU
-    gender: f
-    group: 23-2
-    semester: 4
-    variant: 8
 mentors:
   - name: Шевченко Т. Г.
     degree: Доцент кафедри ПІ
@@ -20,3 +9,14 @@ mentors:
   - name: Франко І. Я.
     degree: Асистент кафедри ПІ
     gender: m
+edu_program: &EDU ПЗПІ
+university: ХНУРЕ
+authors:
+  - name: Косач Л. П.
+    full_name_gen: Косач Лариси Петрівни
+    course: 2
+    edu: *EDU
+    gender: f
+    group: 23-2
+    semester: 4
+    variant: 8
