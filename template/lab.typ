@@ -1,26 +1,6 @@
-#import "@local/nure:0.0.0": *
+#import "@local/nure:0.1.0": *
 
-#show: lab-pz-template.with(
-  doctype: "ЛБ",
-  title: "Інформаційна система «Помічник класного керівника». Керування класом",
-  subject_shorthand: "БД",
-  department_gen: "Програмної інженерії",
-  authors: (
-    (
-      name: "Ситник Є. С.",
-      full_name_gen: "Ситника Єгора Сергійовича",
-      variant: 13,
-      group: "ПЗПІ-23-2",
-      gender: "m",
-    ),
-  ),
-  mentor: (
-    name: "Черепанова Ю. Ю.",
-    gender: "f",
-    degree: "Ст. викл. каф. ПІ",
-  ),
-  worknumber: 1,
-)
+#show: pz-lb-template.with(..yaml("config/doc.yaml"))
 
 #v(-spacing)
 

@@ -9,7 +9,7 @@ This project contains two template functions and some utilities for writing NURE
 #### `pz-lb-template` - For Laboratory and Practical Works
 This template:
 - Sets up document styles;
-- Formats the title page according to NURE guidelines.
+- Formats the title page according to NURE/DSTU guidelines.
 
 #### `cw-template` - For Course Works
 This template:
@@ -29,30 +29,42 @@ This template:
 ### As a local typst package
 1. Clone this repository into ~/.local/share/typst/packages/:
 ```bash
-git clone https://gitea.linerds.us/pencelheimer/typst_nure_template.git ~/.local/share/typst/packages/local/nure/0.0.0
+git clone -b 0.1.0 https://gitea.linerds.us/pencelheimer/typst_nure_template.git ~/.local/share/typst/packages/local/nure/0.1.0
 ```
 2. Init your project with Typst:
 ```bash
-typst init @local/nure:0.0.0 project-name
+typst init @local/nure:0.1.0 project-name
 ```
 
-### As a file in your project
-Include lib.typ in your project and utilize the provided functions:
+### As a standalone file
+Copy `lib.typ` to your project's root directory.
 
+### In your project
 ```typst
-// Import the template
-#import "lib.typ": *
+// Import the template either from a local package...
+#import "@local/nure:0.1.0": *
+// ...or by importing a lib.typ directly
+// #import "/lib.typ": *
 
 // Setup the document
-#show: lab-pz-template.with(
+#show: pz-lb-template.with(
     title: "Some title",
+    // etc: "and so on",
+    // ...
 )
 // this template automatically inserts a `=title`
 
-// Write your content
+// Write your content...
 #v(-spacing) // remove spacing between headings
 == Purpose
 Some text
+
+// ...or include your modules
+#include "src/intro.typ"
+#include "src/chapter1.typ"
+#include "src/chapter2.typ"
+// NOTE: if you want to use variables or utils provided by the package,
+// you have to import the package or a lib.typ inside a module.
 ```
 
 ### Notes:
@@ -60,12 +72,28 @@ Some text
 
 ### Example Project Structure
 ```
-project-folder/
-├── main.typ
-├── template.typ
-├── images/
-│   ├── figure1.png
-│   ├── figure2.png
-│   ├── ...
-├── ...
+project/
+├── main.typ -- for boilerplate code and importing everything 
+├── config/
+│   ├── doc.yaml -- for things that don't change across works, i.e. author and mentor metadata
+│   ├── universities.yaml -- for user-specific configuration, i.e. education programs and disciplines
+│   └── ...
+├── src/
+│   ├── intro.typ
+│   ├── chapter1.typ
+│   ├── chapter2.typ
+│   └── ...
+├── figures/
+│   ├── chapter1/
+│   │   ├── figure1.png
+│   │   ├── figure2.png
+│   │   ├── figure3.png
+│   │   └── ...
+│   ├── chapter2/
+│   │   ├── figure1.png
+│   │   ├── figure2.png
+│   │   ├── figure3.png
+│   │   └── ...
+│   └── ...
+└── ...
 ```

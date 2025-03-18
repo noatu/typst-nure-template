@@ -1,23 +1,7 @@
 
 // Academic aliases {{{1
 
-/// subject abbreviations to full names
-#let subjects = (
-  "БД": "Бази даних",
-  "ОПНJ": "Основи програмування на Java",
-  "ОС": "Операційні системи",
-  "ПП": "Проектний практикум",
-  "СПМ": "Скриптові мови програмування",
-  "Ф": "Філософія",
-)
-
-/// education program abbreviations to name & number
-#let edu_programs = (
-  "ПЗПІ": (
-    name: "Інженерія програмного забезпечення",
-    number: 121, // TODO: ПЗПІ is "F2" now
-  ),
-)
+#let universities = yaml("config/universities.yaml")
 
 // Template formatting functions {{{1
 
@@ -25,7 +9,10 @@
 #let nheading(title) = heading(depth: 1, numbering: none, title)
 
 /// fill horizontal space with a box and not an empty space
-#let hfill(width) = box(width: width, repeat(" ")) // NOTE: This is a HAIR SPACE (U+200A), not a regular space
+#let hfill(width) = box(
+  width: width,
+  repeat(" "),
+) // NOTE: This is a HAIR SPACE (U+200A), not a regular space
 
 /// make underlined cell with filled value
 #let uline(align: center, content) = underline[
@@ -68,7 +55,9 @@
 #let img(path, caption, ..sink) = {
   let parts = path.split(".").first().split("/")
 
-  let label_string = if parts.len() <= 2 or parts.at(-1).starts-with(parts.at(-2)) {
+  let label_string = if (
+    parts.len() <= 2 or parts.at(-1).starts-with(parts.at(-2))
+  ) {
     // ("image",), (_, "image") and (.., "img", "img_image")
     parts.last()
   } else {
@@ -84,7 +73,10 @@
     [#caption (за даними #sink.pos().first())]
   }
 
-  [#figure(image(path, ..sink.named()), caption: caption) #label(label_string)]
+  [#figure(
+      image(path, ..sink.named()),
+      caption: caption,
+    ) #label(label_string)]
 }
 
 // Styling {{{1
@@ -107,7 +99,12 @@
     },
   )
 
-  set text(font: ("Times New Roman", "Liberation Serif"), size: 14pt, hyphenate: false, lang: "uk")
+  set text(
+    font: ("Times New Roman", "Liberation Serif"),
+    size: 14pt,
+    hyphenate: false,
+    lang: "uk",
+  )
   set par(justify: true, first-line-indent: (amount: 1.25cm, all: true))
   set underline(evade: false)
 
@@ -117,7 +114,11 @@
   set par(leading: spacing)
 
   // enums and lists {{{2
-  set enum(numbering: i => { ua_alpha_numbering.at(i) + ")" }, indent: 1.25cm, body-indent: 0.5cm)
+  set enum(
+    numbering: i => { ua_alpha_numbering.at(i) + ")" },
+    indent: 1.25cm,
+    body-indent: 0.5cm,
+  )
   show enum: it => {
     set enum(indent: 0em, numbering: "1)")
     it
@@ -144,8 +145,20 @@
     counter(figure.where(kind: raw)).update(0)
     it
   }
-  set math.equation(numbering: (..num) => numbering("(1.1)", counter(heading).get().at(0), num.pos().first()))
-  set figure(numbering: (..num) => numbering("1.1", counter(heading).get().at(0), num.pos().first()))
+  set math.equation(
+    numbering: (..num) => numbering(
+      "(1.1)",
+      counter(heading).get().at(0),
+      num.pos().first(),
+    ),
+  )
+  set figure(
+    numbering: (..num) => numbering(
+      "1.1",
+      counter(heading).get().at(0),
+      num.pos().first(),
+    ),
+  )
 
   // appearance of references to images and tables {{{2
   set ref(
@@ -217,7 +230,11 @@
       spacing: new_spacing,
       leading: new_spacing,
     )
-    set text(size: 11pt, font: "Courier New", weight: "semibold")
+    set text(
+      size: 11pt,
+      font: ("Iosevka NFM", "Courier New"),
+      weight: "semibold",
+    )
 
     v(spacing * 2.5, weak: true)
     pad(it, left: 1.25cm)
@@ -233,11 +250,10 @@
 /// -> content
 /// - doc (content): Content to apply the template to.
 /// - title (str): Title of the document.
-/// - subject_shorthand (str): Subject short name.
-/// - department_gen (str): Department name in genitive form.
-/// - authors ((name: str, full_name_gen: str, variant: int, group: str, gender: str),): List of Authors dicts.
-/// - mentors ((name: str, gender: str, degree: str),): List of mentors dicts.
-/// - edu_program_shorthand (str): Education program shorthand.
+/// - subject (str): Subject short name.
+/// - authors ((name: str, full_name_gen: str, variant: int, course: int, semester: int, group: str, gender: str),): List of authors.
+/// - mentors ((name: str, degree: str),): List of mentors.
+/// - edu_program (str): Education program shorthand.
 /// - task_list (done_date: datetime, initial_date: datetime, source: (content | str), content: (content | str), graphics: (content | str)): Task list object.
 /// - calendar_plan ( plan_table: (content | str), approval_date: datetime): Calendar plan object.
 /// - abstract (keywords: (str, ), text: (content | str)): Abstract object.
@@ -245,16 +261,16 @@
 /// - appendices (content): Content with appendices.
 #let cw-template(
   doc,
-  title: "NONE",
-  subject_shorthand: "NONE",
-  department_gen: "Програмної інженерії",
+  title: none,
+  subject: none,
+  university: "ХНУРЕ",
   author: (),
   mentors: (),
-  edu_program_shorthand: "ПЗПІ",
+  edu_program: none,
   task_list: (),
   calendar_plan: (),
   abstract: (),
-  bib_path: "bibl.yml",
+  bib_path: none,
   appendices: (),
 ) = {
   set document(title: title, author: author.name)
@@ -273,27 +289,24 @@
 
 
   let head_mentor = mentors.at(0)
-  let edu_program = edu_programs.at(edu_program_shorthand)
+  let uni = universities.at(university)
+  let edu_prog = uni.edu_programs.at(edu_program)
 
   // page 1 {{{2
   [
     #set align(center)
-    МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ
-
-    ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
-
-    \
-
-    Кафедра Програмної інженерії
+    МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ\
+    #upper(uni.name)
 
     \
 
-    ПОЯСНЮВАЛЬНА ЗАПИСКА
+    Кафедра #edu_prog.department_gen
 
-    ДО КУРСОВОЇ РОБОТИ
+    \
 
-    з дисципліни: "#subjects.at(subject_shorthand, default: "NONE")"
-
+    ПОЯСНЮВАЛЬНА ЗАПИСКА\
+    ДО КУРСОВОЇ РОБОТИ\
+    з дисципліни: "#uni.subjects.at(subject, default: "NONE")"\
     Тема роботи: "#title"
 
     \ \ \
@@ -301,7 +314,7 @@
     #columns(2, gutter: 4cm)[
       #set align(left)
 
-      #if author.gender == "m" { [Виконав\ ] } else { [Виконала\ ] } ст. гр. #author.group
+      #if author.gender == "m" { [Виконав\ ] } else { [Виконала\ ] } ст. гр. #edu_program\-#author.group
 
       \
       Керівник:\
@@ -345,7 +358,7 @@
 
   // page 2 {{{2
   {
-    uline[Харківський національний університет радіоелектроніки]
+    uline[#uni.name]
 
     linebreak()
     linebreak()
@@ -358,17 +371,19 @@
         Спеціальність
       ],
       {
-        uline(align: left, department_gen)
+        uline(align: left, edu_prog.department_gen)
         linebreak()
-        uline(align: left, subjects.at(subject_shorthand))
+        uline(align: left, uni.subjects.at(subject))
         linebreak()
-        uline(align: left, [#edu_program.number #edu_program.name])
+        uline(align: left, [#edu_prog.code #edu_prog.name_long])
       },
     )
     grid(
       columns: (1fr, 1fr, 1fr),
       gutter: 0.3fr,
-      [#bold[Курс] #uline(2)], [#bold[Група] #uline(author.group)], [#bold[Семестр] #uline(3)],
+      [#bold[Курс] #uline(author.course)],
+      [#bold[Група] #uline([#edu_program\-#author.group])],
+      [#bold[Семестр] #uline(author.semester)],
     )
 
     linebreak()
@@ -495,12 +510,17 @@
       for i in range(n) {
         for j in range(0, n - i - 1) {
           if (
-            (not is_cyrillic(keywords.at(j)) and is_cyrillic(keywords.at(j + 1)))
+            (
+              not is_cyrillic(keywords.at(j)) and is_cyrillic(keywords.at(j + 1))
+            )
               or (
                 is_cyrillic(keywords.at(j)) == is_cyrillic(keywords.at(j + 1)) and keywords.at(j) > keywords.at(j + 1)
               )
           ) {
-            (keywords.at(j), keywords.at(j + 1)) = (keywords.at(j + 1), keywords.at(j))
+            (keywords.at(j), keywords.at(j + 1)) = (
+              keywords.at(j + 1),
+              keywords.at(j),
+            )
           }
         }
       }
@@ -626,43 +646,47 @@
 /// -> content
 /// - doc (content): Content to apply the template to.
 /// - doctype ("ЛБ" | "ПЗ"): Document type.
+/// - edu_program (str): Education program shorthand.
 /// - title (str): Title of the document.
-/// - subject_shorthand (str): Subject short name.
-/// - department_gen (str): Department name in genitive form.
-/// - worknumber (int): Number of the work, can be omitted.
-/// - authors ((name: str, full_name_gen: str, variant: int, group: str, gender: str),): List of Authors dicts.
-/// - mentor (name: str, gender: str, degree: str): Mentors objects.
-#let lab-pz-template(
+/// - subject (str): Subject shorthand.
+/// - authors ((name: str, full_name_gen: str, group: str, gender: str, variant: int or none),): List of authors.
+/// - mentors ((name: str, degree: str, gender: str or none),): List of mentors.
+/// - worknumber (int or none): Number of the work. Optional.
+#let pz-lb-template(
   doc,
-  doctype: "NONE",
-  title: "NONE",
-  subject_shorthand: "NONE",
-  department_gen: "Програмної інженерії",
-  worknumber: 1,
+  doctype: none,
+  university: "ХНУРЕ",
+  edu_program: none,
+  title: none,
+  subject: none,
+  worknumber: none,
   authors: (),
-  mentor: (),
+  mentors: (),
 ) = {
   set document(title: title, author: authors.at(0).name)
 
   show: style
 
-  context counter(heading).update(worknumber - 1)
-
+  let uni = universities.at(university)
+  let edu_prog = uni.edu_programs.at(edu_program)
   // page 1 {{{2
   align(center)[
     МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ \
-    ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
+    #upper(uni.name)
 
     \ \
-    Кафедра #department_gen
+    Кафедра #edu_prog.department_gen
 
     \ \ \
     Звіт \
     з
     #if doctype == "ЛБ" [лабораторної роботи] else [практичної роботи]
-    #if worknumber != none [№ #worknumber]
+    #if worknumber != none {
+      context counter(heading).update(worknumber - 1)
+      [№#worknumber]
+    }
 
-    з дисципліни: "#subjects.at(subject_shorthand, default: "UNLNOWN SUBJECT, PLEASE OPEN AN ISSUE")"
+    з дисципліни: "#uni.subjects.at(subject, default: "UNKNOWN SUBJECT, PLEASE OPEN AN ISSUE")"
 
     з теми: "#title"
 
@@ -675,22 +699,37 @@
         let author = authors.at(0)
         if author.gender == "m" [Виконав:\ ] else [Виконала:\ ]
         [
-          ст. гр. #author.group\
+          ст. гр. #edu_program\-#author.group\
           #author.name\
         ]
         if author.variant != none [Варіант: №#author.variant]
       } else [
         Виконали:\
-        ст. гр. #authors.at(0).group\
-        #authors.map(a => [ #a.name\ ])
+        ст. гр. #edu_program\-#authors.at(0).group\
+        #for author in authors [#author.name\ ]
       ]
 
       #colbreak()
       #set align(right)
 
-      #if mentor.gender == "m" { [Перевірив:\ ] } else { [Перевірила:\ ] }
-      #mentor.degree #if mentor.degree.len() >= 15 [\ ]
-      #mentor.name\
+      #if mentors.len() == 1 {
+        let mentor = mentors.at(0)
+        if mentor.gender == none [Перевірили:\ ] else if (
+          mentor.gender == "m"
+        ) [Перевірив:\ ] else [Перевірилa:\ ]
+        [
+          #mentor.degree\
+          #mentor.name\
+        ]
+      } else [
+        Перевірили:\
+        #for mentor in mentors {
+          [
+            #mentor.degree\
+            #mentor.name\
+          ]
+        }
+      ]
     ]
 
     #v(1fr)
