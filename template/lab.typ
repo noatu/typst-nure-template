@@ -1,6 +1,6 @@
 #import "@local/nure:0.1.0": *
 
-#show: pz-lb-template.with(..yaml("config/doc.yaml"))
+#show: pz-lb.with(..yaml("config/doc.yaml"))
 
 #v(-spacing)
 
