@@ -259,7 +259,7 @@
 /// - abstract (keywords: (str, ), text: (content | str)): Abstract object.
 /// - bib_path path: Path to the bibliography yaml file.
 /// - appendices (content): Content with appendices.
-#let cw-template(
+#let coursework(
   doc,
   title: none,
   subject: none,
@@ -381,7 +381,9 @@
     grid(
       columns: (1fr, 1fr, 1fr),
       gutter: 0.3fr,
-      [#bold[Курс] #uline(author.course)], [#bold[Група] #uline([#edu_program\-#author.group])], [#bold[Семестр] #uline(author.semester)],
+      [#bold[Курс] #uline(author.course)],
+      [#bold[Група] #uline([#edu_program\-#author.group])],
+      [#bold[Семестр] #uline(author.semester)],
     )
 
     linebreak()
@@ -502,17 +504,21 @@
 
     #{
       let keywords = abstract.keywords.map(upper)
-      let is_cyrillic = word => word.split("").any(char => ("А" <= char and char <= "я"))
+      let is_cyrillic = word => word
+        .split("")
+        .any(char => ("А" <= char and char <= "я"))
 
       let n = keywords.len()
       for i in range(n) {
         for j in range(0, n - i - 1) {
           if (
             (
-              not is_cyrillic(keywords.at(j)) and is_cyrillic(keywords.at(j + 1))
+              not is_cyrillic(keywords.at(j))
+                and is_cyrillic(keywords.at(j + 1))
             )
               or (
-                is_cyrillic(keywords.at(j)) == is_cyrillic(keywords.at(j + 1)) and keywords.at(j) > keywords.at(j + 1)
+                is_cyrillic(keywords.at(j)) == is_cyrillic(keywords.at(j + 1))
+                  and keywords.at(j) > keywords.at(j + 1)
               )
           ) {
             (keywords.at(j), keywords.at(j + 1)) = (
@@ -589,7 +595,10 @@
     }
 
     context {
-      for (i, citation) in query(ref.where(element: none)).map(r => str(r.target)).dedup().enumerate() {
+      for (i, citation) in query(ref.where(element: none))
+        .map(r => str(r.target))
+        .dedup()
+        .enumerate() {
         enum.item(
           i + 1,
           format-entry(bib_data.at(citation)),
@@ -650,7 +659,7 @@
 /// - authors ((name: str, full_name_gen: str, group: str, gender: str, variant: int or none),): List of authors.
 /// - mentors ((name: str, degree: str, gender: str or none),): List of mentors.
 /// - worknumber (int or none): Number of the work. Optional.
-#let pz-lb-template(
+#let pz-lb(
   doc,
   doctype: none,
   university: "ХНУРЕ",
