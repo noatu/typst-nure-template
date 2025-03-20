@@ -381,9 +381,7 @@
     grid(
       columns: (1fr, 1fr, 1fr),
       gutter: 0.3fr,
-      [#bold[Курс] #uline(author.course)],
-      [#bold[Група] #uline([#edu_program\-#author.group])],
-      [#bold[Семестр] #uline(author.semester)],
+      [#bold[Курс] #uline(author.course)], [#bold[Група] #uline([#edu_program\-#author.group])], [#bold[Семестр] #uline(author.semester)],
     )
 
     linebreak()
@@ -688,7 +686,7 @@
 
     з дисципліни: "#uni.subjects.at(subject, default: "UNKNOWN SUBJECT, PLEASE OPEN AN ISSUE")"
 
-    з теми: "#title"
+    #if title != none [з теми: "#title"]
 
     \ \ \ \
 
@@ -739,7 +737,8 @@
 
   pagebreak(weak: true)
 
-  heading(title)
+  if title != none [#heading(title)]
+
   doc
 }
 
