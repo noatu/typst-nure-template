@@ -1,4 +1,5 @@
 # Typst Template for NURE Works
+![pz-lb title page](assets/pz-lb_title_page.png)
 
 ## General Info
 
