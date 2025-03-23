@@ -232,7 +232,7 @@
     )
     set text(
       size: 11pt,
-      font: ("Iosevka NFM", "Courier New"),
+      font: ("Courier New", "Iosevka NFM"),
       weight: "semibold",
     )
 
@@ -725,7 +725,7 @@
           mentor.gender == "m"
         ) [Перевірив:\ ] else [Перевірилa:\ ]
         [
-          #mentor.degree\
+          #if mentor.degree != none [#mentor.degree\ ]
           #mentor.name\
         ]
       } else [
