@@ -7,12 +7,12 @@ This project contains two template functions and some utilities for writing NURE
 
 ### Templates
 
-#### `pz-lb-template` - For Laboratory and Practical Works
+#### `pz-lb` - For Practical and Laboratory Works
 This template:
 - Sets up document styles;
 - Formats the title page according to NURE/DSTU guidelines.
 
-#### `cw-template` - For Course Works
+#### `coursework` - For Course Works
 This template:
 - Sets up document styles;
 - Formats the title, task, calendar plan, and abstract pages;
@@ -47,15 +47,19 @@ Copy `lib.typ` to your project's root directory.
 // ...or by importing a lib.typ directly
 // #import "/lib.typ": *
 
-// Setup the document
-#show: pz-lb-template.with(
+// 1. Setup the document
+// by setting values directly...
+#show: pz-lb.with(
     title: "Some title",
     // etc: "and so on",
     // ...
 )
+// ...or using a config/doc.yaml file
+#show: pz-lb.with(..yaml("config/doc.yaml"))
+
 // this template automatically inserts a `=title`
 
-// Write your content...
+// Write your content
 #v(-spacing) // remove spacing between headings
 == Purpose
 Some text
@@ -70,6 +74,7 @@ Some text
 
 ### Notes:
 1. Use `#v(-spacing)` to remove vertical spacing between titles (this cannot be automatically handled by the template). Variable `spacing` used here is imported from the template.
+2. When importing `@local/nure:0.1.0` and specifying file paths in functions handled by the package, the path will relative to package's root directory, e.g. setting `#show: coursework.with(bib_path: "bibl.yml")` will evaluate to `~/.local/share/typst/packages/local/nure/0.1.0/bibl.yml`, the same is for `#img` function, which makes it quite annoying and forces one to import `lib.typ` file. Please open an issue or contact us in any other way if you have any advice.
 
 ### Example Project Structure
 ```
