@@ -232,7 +232,7 @@
     )
     set text(
       size: 11pt,
-      font: ("Courier New", "Iosevka NFM"),
+      font: ("Courier New", "Liberation Mono"),
       weight: "semibold",
     )
 
