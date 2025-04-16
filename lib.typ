@@ -709,7 +709,7 @@
           ст. гр. #edu_program\-#author.group\
           #author.name\
         ]
-        if author.variant != none [Варіант: №#author.variant]
+        if "variant" in author.keys() and author.variant != none [Варіант: №#author.variant]
       } else [
         Виконали:\
         ст. гр. #edu_program\-#authors.at(0).group\
