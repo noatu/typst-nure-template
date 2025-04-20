@@ -7,7 +7,7 @@ This project contains two template functions and some utilities for writing NURE
 
 ### Templates
 
-#### `pz-lb` - For Practical and Laboratory Works
+#### `pz-lb` - For Practice and Laboratory Works
 This template:
 - Sets up document styles;
 - Formats the title page according to NURE/DSTU guidelines.
@@ -50,9 +50,9 @@ Copy `lib.typ` to your project's root directory.
 // 1. Setup the document
 // by setting values directly...
 #show: pz-lb.with(
-    title: "Some title",
-    // etc: "and so on",
-    // ...
+  title: "Some title",
+  // etc: "and so on",
+  // ...
 )
 // ...or using a config/doc.yaml file
 #show: pz-lb.with(..yaml("config/doc.yaml"))
@@ -70,6 +70,18 @@ Some text
 #include "src/chapter2.typ"
 // NOTE: if you want to use variables or utils provided by the package,
 // you have to import the package or a lib.typ inside a module.
+
+
+// If you ever need appendices in pz-lb template use the show rule
+// WARNING: when using coursework template use its own argument,
+// so it can put bibliography before appendices
+#show: appendices_style
+
+= Quote
+#link("https://youtu.be/bJQj1uKtnus")[
+  The art isn't the art, the art is never the art,
+  the art is the thing that happens inside you when you make it and the feeling in the heart of the beholder.
+]
 ```
 
 ### Notes:

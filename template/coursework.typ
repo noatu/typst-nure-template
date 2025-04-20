@@ -106,7 +106,7 @@
   task_list: task_list,
   calendar_plan: calendar_plan,
   abstract: abstract,
-  bib_path: "bibl.yml",
+  bib_path: bytes("bibl.yml"), // NOTE: use `bytes` as typst looks in template dir when using just filename
   appendices: appendices,
 )
 

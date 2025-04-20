@@ -87,6 +87,7 @@
 // spacing between lines
 #let spacing = 0.95em
 
+// main {{{2
 #let style(it) = {
   set page(
     paper: "a4",
@@ -113,7 +114,7 @@
   set par(spacing: spacing)
   set par(leading: spacing)
 
-  // enums and lists {{{2
+  // enums and lists {{{3
   set enum(
     numbering: i => { ua_alpha_numbering.at(i) + ")" },
     indent: 1.25cm,
@@ -126,7 +127,7 @@
 
   set list(indent: 1.35cm, body-indent: 0.5cm, marker: [--])
 
-  // figures {{{2
+  // figures {{{3
   show figure: it => {
     v(spacing * 2, weak: true)
     it
@@ -160,7 +161,7 @@
     ),
   )
 
-  // appearance of references to images and tables {{{2
+  // appearance of references to images and tables {{{3
   set ref(
     supplement: it => {
       if it == none or not it.has("kind") {
@@ -187,7 +188,7 @@
     [(#it)]
   }
 
-  // headings {{{2
+  // headings {{{3
   set heading(numbering: "1.1")
 
   show heading.where(level: 1): it => {
@@ -222,7 +223,7 @@
     v(spacing * 2, weak: true)
   }
 
-  // listings {{{2
+  // listings {{{3
   show raw: it => {
     let new_spacing = 0.5em
     set block(spacing: new_spacing)
@@ -239,6 +240,45 @@
     v(spacing * 2.5, weak: true)
     pad(it, left: 1.25cm)
     v(spacing * 2.5, weak: true)
+  }
+
+  it
+}
+
+// appendices {{{2
+#let appendices_style(it) = {
+  counter(heading).update(0)
+
+  set heading(
+    numbering: (i, ..nums) => {
+      let char = upper(ua_alpha_numbering.at(i))
+      if nums.pos().len() == 0 { char } else {
+        char + "." + nums.pos().map(str).join(".")
+      }
+    },
+  )
+
+  show heading.where(level: 1): it => {
+    set align(center)
+    set text(size: 14pt, weight: "regular")
+
+    pagebreak(weak: true)
+    bold[ДОДАТОК #counter(heading).display(it.numbering)]
+    linebreak()
+    it.body
+    v(spacing * 2, weak: true)
+  }
+
+  show heading.where(level: 2): it => {
+    set text(size: 14pt, weight: "regular")
+
+    v(spacing * 2, weak: true)
+    block(width: 100%, spacing: 0em)[
+      #h(1.25cm)
+      #counter(heading).display(it.numbering)
+      #it.body
+    ]
+    v(spacing * 2, weak: true)
   }
 
   it
@@ -504,21 +544,17 @@
 
     #{
       let keywords = abstract.keywords.map(upper)
-      let is_cyrillic = word => word
-        .split("")
-        .any(char => ("А" <= char and char <= "я"))
+      let is_cyrillic = word => word.split("").any(char => ("А" <= char and char <= "я"))
 
       let n = keywords.len()
       for i in range(n) {
         for j in range(0, n - i - 1) {
           if (
             (
-              not is_cyrillic(keywords.at(j))
-                and is_cyrillic(keywords.at(j + 1))
+              not is_cyrillic(keywords.at(j)) and is_cyrillic(keywords.at(j + 1))
             )
               or (
-                is_cyrillic(keywords.at(j)) == is_cyrillic(keywords.at(j + 1))
-                  and keywords.at(j) > keywords.at(j + 1)
+                is_cyrillic(keywords.at(j)) == is_cyrillic(keywords.at(j + 1)) and keywords.at(j) > keywords.at(j + 1)
               )
           ) {
             (keywords.at(j), keywords.at(j + 1)) = (
@@ -595,10 +631,7 @@
     }
 
     context {
-      for (i, citation) in query(ref.where(element: none))
-        .map(r => str(r.target))
-        .dedup()
-        .enumerate() {
+      for (i, citation) in query(ref.where(element: none)).map(r => str(r.target)).dedup().enumerate() {
         enum.item(
           i + 1,
           format-entry(bib_data.at(citation)),
@@ -607,47 +640,10 @@
     }
   }
 
-  // appendices {{{2
-  {
-    counter(heading).update(0)
-
-    set heading(
-      numbering: (i, ..nums) => {
-        let char = upper(ua_alpha_numbering.at(i))
-        if nums.pos().len() == 0 { char } else {
-          char + "." + nums.pos().map(str).join(".")
-        }
-      },
-    )
-
-    show heading.where(level: 1): it => {
-      set align(center)
-      set text(size: 14pt, weight: "regular")
-
-      pagebreak(weak: true)
-      bold[ДОДАТОК #counter(heading).display(it.numbering)]
-      linebreak()
-      it.body
-      v(spacing * 2, weak: true)
-    }
-
-    show heading.where(level: 2): it => {
-      set text(size: 14pt, weight: "regular")
-
-      v(spacing * 2, weak: true)
-      block(width: 100%, spacing: 0em)[
-        #h(1.25cm)
-        #counter(heading).display(it.numbering)
-        #it.body
-      ]
-      v(spacing * 2, weak: true)
-    }
-
-    appendices
-  }
+  appendices_style(appendices)
 }
 
-// Laboratory work template {{{1
+// Practice and Laboratory works template {{{1
 
 /// DSTU 3008:2015 Template for NURE
 /// -> content

@@ -29,3 +29,25 @@
 - #lorem(25);
 - #lorem(42);
 - #lorem(27).
+
+#show: appendices_style
+
+= Quote
+#link("https://youtu.be/bJQj1uKtnus")[
+  The art isn't the art, the art is never the art,
+  the art is the thing that happens inside you when you make it and the feeling in the heart of the beholder.
+]
+
+
+= Приклад звіту 1
+#v(-spacing)
+== Частина 1
+#lorem(100)
+== Частина2
+#lorem(200)
+
+= Приклад звіту 2
+#lorem(200)
+
+= Приклад звіту 3
+#lorem(200)
