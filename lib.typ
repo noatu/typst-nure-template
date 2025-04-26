@@ -685,7 +685,7 @@
     з
     #if doctype == "ЛБ" [лабораторної роботи] else [практичної роботи]
     #if worknumber != none {
-      context counter(heading).update(worknumber - 1)
+      context counter(heading).update(worknumber - if title == none {0} else {1})
       [№#worknumber]
     }
 
