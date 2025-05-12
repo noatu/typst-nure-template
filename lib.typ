@@ -1,3 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0
+/*
+ * typst-nure-template/lib.typ
+ *
+ * Typst template for NURE (Kharkiv National University of Radio Electronics) works
+ */
+
+#import "style.typ": spacing, dstu-style, appendices-style
 
 // Academic aliases {{{1
 
@@ -79,211 +87,6 @@
     ) #label(label_string)]
 }
 
-// Styling {{{1
-/// NOTE: may be wrong
-#let ua_alpha_numbering = "абвгдежиклмнпрстуфхцшщюя".split("") // 0 = "", 1 = "а"
-
-// general outlook {{{2
-// spacing between lines
-#let spacing = 0.95em
-
-// main {{{2
-#let style(it) = {
-  set page(
-    paper: "a4",
-    margin: (top: 20mm, right: 10mm, bottom: 20mm, left: 25mm),
-    number-align: top + right,
-    numbering: (..numbers) => {
-      if numbers.pos().at(0) != 1 {
-        numbering("1", numbers.pos().at(0))
-      }
-    },
-  )
-
-  set text(
-    font: ("Times New Roman", "Liberation Serif"),
-    size: 14pt,
-    hyphenate: false,
-    lang: "uk",
-  )
-  set par(justify: true, first-line-indent: (amount: 1.25cm, all: true))
-  set underline(evade: false)
-
-  // set 1.5 line spacing
-  set block(spacing: spacing)
-  set par(spacing: spacing)
-  set par(leading: spacing)
-
-  // enums and lists {{{3
-  set enum(
-    numbering: i => { ua_alpha_numbering.at(i) + ")" },
-    indent: 1.25cm,
-    body-indent: 0.5cm,
-  )
-  show enum: it => {
-    set enum(indent: 0em, numbering: "1)")
-    it
-  }
-
-  set list(indent: 1.35cm, body-indent: 0.5cm, marker: [--])
-
-  // figures {{{3
-  show figure: it => {
-    v(spacing * 2, weak: true)
-    it
-    v(spacing * 2, weak: true)
-  }
-
-  set figure.caption(separator: [ -- ])
-  show figure.where(kind: table): set figure.caption(position: top)
-  show figure.caption.where(kind: table): set align(left)
-
-  // figure numbering
-  show heading.where(level: 1): it => {
-    counter(math.equation).update(0)
-    counter(figure.where(kind: image)).update(0)
-    counter(figure.where(kind: table)).update(0)
-    counter(figure.where(kind: raw)).update(0)
-    it
-  }
-  set math.equation(
-    numbering: (..num) => numbering(
-      "(1.1)",
-      counter(heading).get().at(0),
-      num.pos().first(),
-    ),
-  )
-  set figure(
-    numbering: (..num) => numbering(
-      "1.1",
-      counter(heading).get().at(0),
-      num.pos().first(),
-    ),
-  )
-
-  // appearance of references to images and tables {{{3
-  set ref(
-    supplement: it => {
-      if it == none or not it.has("kind") {
-        it
-      } else if it.kind == image {
-        "див. рис."
-      } else if it.kind == table {
-        "див. таблицю"
-      } else {
-        it
-      }
-    },
-  )
-  show ref: it => {
-    let el = it.element
-
-    if el == none or not el.has("kind") {
-      return it
-    }
-    if el.kind != image and el.kind != table {
-      return it
-    }
-
-    [(#it)]
-  }
-
-  // headings {{{3
-  set heading(numbering: "1.1")
-
-  show heading.where(level: 1): it => {
-    set align(center)
-    set text(size: 14pt, weight: "semibold")
-
-    pagebreak(weak: true)
-    upper(it)
-    v(spacing * 2, weak: true)
-  }
-  show heading.where(level: 2): it => {
-    set text(size: 14pt, weight: "regular")
-
-    v(spacing * 2, weak: true)
-    block(width: 100%, spacing: 0em)[
-      #h(1.25cm)
-      #counter(heading).display(it.numbering)
-      #it.body
-    ]
-    v(spacing * 2, weak: true)
-  }
-
-  show heading.where(level: 3): it => {
-    set text(size: 14pt, weight: "regular")
-
-    v(spacing * 2, weak: true)
-    block(width: 100%, spacing: 0em)[
-      #h(1.25cm)
-      #counter(heading).display(it.numbering)
-      #it.body
-    ]
-    v(spacing * 2, weak: true)
-  }
-
-  // listings {{{3
-  show raw: it => {
-    let new_spacing = 0.5em
-    set block(spacing: new_spacing)
-    set par(
-      spacing: new_spacing,
-      leading: new_spacing,
-    )
-    set text(
-      size: 11pt,
-      font: ("Courier New", "Liberation Mono"),
-      weight: "semibold",
-    )
-
-    v(spacing * 2.5, weak: true)
-    pad(it, left: 1.25cm)
-    v(spacing * 2.5, weak: true)
-  }
-
-  it
-}
-
-// appendices {{{2
-#let appendices_style(it) = {
-  counter(heading).update(0)
-
-  set heading(
-    numbering: (i, ..nums) => {
-      let char = upper(ua_alpha_numbering.at(i))
-      if nums.pos().len() == 0 { char } else {
-        char + "." + nums.pos().map(str).join(".")
-      }
-    },
-  )
-
-  show heading.where(level: 1): it => {
-    set align(center)
-    set text(size: 14pt, weight: "regular")
-
-    pagebreak(weak: true)
-    bold[ДОДАТОК #counter(heading).display(it.numbering)]
-    linebreak()
-    it.body
-    v(spacing * 2, weak: true)
-  }
-
-  show heading.where(level: 2): it => {
-    set text(size: 14pt, weight: "regular")
-
-    v(spacing * 2, weak: true)
-    block(width: 100%, spacing: 0em)[
-      #h(1.25cm)
-      #counter(heading).display(it.numbering)
-      #it.body
-    ]
-    v(spacing * 2, weak: true)
-  }
-
-  it
-}
-
 // Coursework template {{{1
 
 /// DSTU 3008:2015 Template for NURE
@@ -315,7 +118,7 @@
 ) = {
   set document(title: title, author: author.name)
 
-  show: style
+  show: dstu-style.with(skip: 1)
 
   let bib-count = state("citation-counter", ())
   show cite: it => {
@@ -554,7 +357,8 @@
               not is_cyrillic(keywords.at(j)) and is_cyrillic(keywords.at(j + 1))
             )
               or (
-                is_cyrillic(keywords.at(j)) == is_cyrillic(keywords.at(j + 1)) and keywords.at(j) > keywords.at(j + 1)
+                is_cyrillic(keywords.at(j)) == is_cyrillic(keywords.at(j + 1))
+                  and keywords.at(j) > keywords.at(j + 1)
               )
           ) {
             (keywords.at(j), keywords.at(j + 1)) = (
@@ -631,7 +435,10 @@
     }
 
     context {
-      for (i, citation) in query(ref.where(element: none)).map(r => str(r.target)).dedup().enumerate() {
+      for (i, citation) in query(ref.where(element: none))
+        .map(r => str(r.target))
+        .dedup()
+        .enumerate() {
         enum.item(
           i + 1,
           format-entry(bib_data.at(citation)),
@@ -640,7 +447,7 @@
     }
   }
 
-  appendices_style(appendices)
+  appendices-style(appendices)
 }
 
 // Practice and Laboratory works template {{{1
@@ -668,7 +475,7 @@
 ) = {
   set document(title: title, author: authors.at(0).name)
 
-  show: style
+  show: dstu-style.with(skip: 1)
 
   let uni = universities.at(university)
   let edu_prog = uni.edu_programs.at(edu_program)
@@ -685,7 +492,7 @@
     з
     #if doctype == "ЛБ" [лабораторної роботи] else [практичної роботи]
     #if worknumber != none {
-      context counter(heading).update(worknumber - if title == none {0} else {1})
+      context counter(heading).update(worknumber - if title == none { 0 } else { 1 })
       [№#worknumber]
     }
 

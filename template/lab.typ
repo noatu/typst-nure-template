@@ -1,4 +1,4 @@
-#import "@local/nure:0.1.0": *
+#import "@local/nure:0.2.0": *
 
 #show: pz-lb.with(..yaml("config/doc.yaml"))
 
@@ -30,7 +30,7 @@
 - #lorem(42);
 - #lorem(27).
 
-#show: appendices_style
+#show: appendices-style
 
 = Quote
 #link("https://youtu.be/bJQj1uKtnus")[

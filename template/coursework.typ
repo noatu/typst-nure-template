@@ -1,4 +1,4 @@
-#import "@local/nure:0.1.0": *
+#import "@local/nure:0.2.0": *
 
 #let author = (
   name: "Ситник Є. С.",
