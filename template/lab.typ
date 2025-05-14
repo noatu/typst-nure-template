@@ -1,6 +1,21 @@
 #import "@local/nure:0.2.0": *
 
-#show: pz-lb.with(..yaml("config/doc.yaml"))
+#show: general.with(
+  department: "Програмної інженерії",
+  work_type: "з лабораторної роботи",
+  number: 3,
+  subject: "Операційні системи",
+  title: "Керування зовнішніми пристроями. Нестандартні пристрої",
+  author: (
+    (name: "Шевчентко Т. Г.", group: "ПЗПІ-23-0"),
+    (name: "Косач Л. П."),
+  ),
+  mentor: (
+    gender: "m",
+    name: "Франко І. Я.",
+    degree: "доц. каф. ПІ",
+  ),
+)
 
 #v(-spacing)
 

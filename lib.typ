@@ -2,16 +2,13 @@
 /*
  * typst-nure-template/lib.typ
  *
- * Typst template for NURE (Kharkiv National University of Radio Electronics) works
+ * Typst library for NURE (Kharkiv National University of Radio Electronics) works
  */
 
 #import "style.typ": spacing, dstu-style, appendices-style
+#import "template.typ": *
 
-// Academic aliases {{{1
-
-#let universities = yaml("config/universities.yaml")
-
-// Template formatting functions {{{1
+// TODO: Template formatting functions {{{
 
 /// numberless heading
 #let nheading(title) = heading(depth: 1, numbering: none, title)
@@ -48,7 +45,11 @@
   "грудня",
 ).at(month - 1)
 
-// Helper functions {{{1
+// }}}
+
+// TODO: Helper functions {{{
+
+// TODO: those are dependent on path, move to separate file as a separate sublib for local usage.
 
 /// captioned image with label derived from path:
 /// - "image.png" = @image
@@ -87,7 +88,9 @@
     ) #label(label_string)]
 }
 
-// Coursework template {{{1
+// }}}
+
+// TODO: Coursework template {{{
 
 /// DSTU 3008:2015 Template for NURE
 /// -> content
@@ -448,110 +451,6 @@
   }
 
   appendices-style(appendices)
-}
-
-// Practice and Laboratory works template {{{1
-
-/// DSTU 3008:2015 Template for NURE
-/// -> content
-/// - doc (content): Content to apply the template to.
-/// - doctype ("ЛБ" | "ПЗ"): Document type.
-/// - edu_program (str): Education program shorthand.
-/// - title (str): Title of the document.
-/// - subject (str): Subject shorthand.
-/// - authors ((name: str, full_name_gen: str, group: str, gender: str, variant: int or none),): List of authors.
-/// - mentors ((name: str, degree: str, gender: str or none),): List of mentors.
-/// - worknumber (int or none): Number of the work. Optional.
-#let pz-lb(
-  doc,
-  doctype: none,
-  university: "ХНУРЕ",
-  edu_program: none,
-  title: none,
-  subject: none,
-  worknumber: none,
-  authors: (),
-  mentors: (),
-) = {
-  set document(title: title, author: authors.at(0).name)
-
-  show: dstu-style.with(skip: 1)
-
-  let uni = universities.at(university)
-  let edu_prog = uni.edu_programs.at(edu_program)
-  // page 1 {{{2
-  align(center)[
-    МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ \
-    #upper(uni.name)
-
-    \ \
-    Кафедра #edu_prog.department_gen
-
-    \ \ \
-    Звіт \
-    з
-    #if doctype == "ЛБ" [лабораторної роботи] else [практичної роботи]
-    #if worknumber != none {
-      context counter(heading).update(worknumber - if title == none { 0 } else { 1 })
-      [№#worknumber]
-    }
-
-    з дисципліни: "#uni.subjects.at(subject, default: "UNKNOWN SUBJECT, PLEASE OPEN AN ISSUE")"
-
-    #if title != none [з теми: "#title"]
-
-    \ \ \ \
-
-    #columns(2)[
-      #set align(left)
-      #set par(first-line-indent: 0pt)
-      #if authors.len() == 1 {
-        let author = authors.at(0)
-        if author.gender == "m" [Виконав:\ ] else [Виконала:\ ]
-        [
-          ст. гр. #edu_program\-#author.group\
-          #author.name\
-        ]
-        if "variant" in author.keys() and author.variant != none [Варіант: №#author.variant]
-      } else [
-        Виконали:\
-        ст. гр. #edu_program\-#authors.at(0).group\
-        #for author in authors [#author.name\ ]
-      ]
-
-      #colbreak()
-      #set align(right)
-
-      #if mentors.len() == 1 {
-        let mentor = mentors.at(0)
-        if mentor.gender == none [Перевірили:\ ] else if (
-          mentor.gender == "m"
-        ) [Перевірив:\ ] else [Перевірилa:\ ]
-        [
-          #if mentor.degree != none [#mentor.degree\ ]
-          #mentor.name\
-        ]
-      } else [
-        Перевірили:\
-        #for mentor in mentors {
-          [
-            #mentor.degree\
-            #mentor.name\
-          ]
-        }
-      ]
-    ]
-
-    #v(1fr)
-
-    Харків -- #datetime.today().display("[year]")
-  ]
-
-  pagebreak(weak: true)
-
-  if title != none [#heading(title)]
-
-  doc
-}
+} // }}}
 
 // vim:sts=2:sw=2:fdl=0:fdm=marker:cms=/*%s*/

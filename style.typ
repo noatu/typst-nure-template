@@ -145,13 +145,14 @@
     v(spacing * 2.5, weak: true)
   }
 
-  it // }}}
+  it
+  // }}}
 }
 
 /// DSTU 3008:2015 Appendices Style
 /// -> content
 /// - it (content): Content to apply the style to.
-#let appendices-style(it) = /* {{{1 */ {
+#let appendices-style(it) = /* {{{ */ {
   counter(heading).update(0)
   set heading(numbering: (i, ..n) => upper(num-to-alpha.at(i)) + numbering(".1.1", ..n))
 

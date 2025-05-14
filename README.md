@@ -1,3 +1,6 @@
+> [!CAUTION]
+> Experimental fork. Successfully **breaking** stuff each commit. Documentation is **not** up to date.
+
 # Typst Template for NURE Works
 ![pz-lb title page](assets/pz-lb_title_page.png)
 
@@ -7,7 +10,7 @@ This project contains two template functions and some utilities for writing NURE
 
 ### Templates
 
-#### `pz-lb` - For Practice and Laboratory Works
+#### `general` - For general works
 This template:
 - Sets up document styles;
 - Formats the title page according to NURE/DSTU guidelines.
@@ -49,13 +52,13 @@ Copy `lib.typ` to your project's root directory.
 
 // 1. Setup the document
 // by setting values directly...
-#show: pz-lb.with(
+#show: general.with(
   title: "Some title",
   // etc: "and so on",
   // ...
 )
-// ...or using a config/doc.yaml file
-#show: pz-lb.with(..yaml("config/doc.yaml"))
+// ...or using a doc.yaml file
+#show: general.with(..yaml("doc.yaml"))
 
 // this template automatically inserts a `=title`
 
@@ -72,7 +75,7 @@ Some text
 // you have to import the package or a lib.typ inside a module.
 
 
-// If you ever need appendices in pz-lb template use the show rule
+// If you ever need appendices in general template use the show rule
 // WARNING: when using coursework template use its own argument,
 // so it can put bibliography before appendices
 #show: appendices-style
@@ -92,10 +95,6 @@ Some text
 ```
 project/
 ├── main.typ -- for boilerplate code and importing everything 
-├── config/
-│   ├── doc.yaml -- for things that don't change across works, i.e. author and mentor metadata
-│   ├── universities.yaml -- for user-specific configuration, i.e. education programs and disciplines
-│   └── ...
 ├── src/
 │   ├── intro.typ
 │   ├── chapter1.typ
