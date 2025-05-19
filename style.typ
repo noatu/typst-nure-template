@@ -69,7 +69,7 @@
   show figure.where(kind: table): set figure.caption(position: top)
   show figure.caption.where(kind: table): set align(left)
 
-  // Numbering
+  // Numbering {{{1
   show heading.where(level: 1): it => {
     counter(math.equation).update(0)
     counter(figure.where(kind: raw)).update(0)
@@ -79,32 +79,6 @@
   }
   set figure(numbering: i => numbering("1.1", counter(heading).get().at(0), i))
   set math.equation(numbering: i => numbering("(1.1)", counter(heading).get().at(0), i))
-
-  // References to images and tables {{{1
-  // TODO: simplify this to a simple number display? Will become a bit manual tho
-  set ref(
-    supplement: it => if it == none or not it.has("kind") {
-      it
-    } else if it.kind == image {
-      "див. рис."
-    } else if it.kind == table {
-      "див. таблицю"
-    } else {
-      it
-    },
-  )
-  show ref: it => {
-    let el = it.element
-
-    if el == none or not el.has("kind") {
-      return it
-    }
-    if el.kind != image and el.kind != table {
-      return it
-    }
-
-    [(#it)]
-  }
 
   // Headings {{{1
   set heading(numbering: "1.1")
@@ -127,7 +101,6 @@
     ]
     v(spacing * 2, weak: true)
   }
-
 
   // Listings {{{1
   show raw: it => {
@@ -153,9 +126,13 @@
 /// -> content
 /// - it (content): Content to apply the style to.
 #let appendices-style(it) = /* {{{ */ {
+  // Numbering
   counter(heading).update(0)
   set heading(numbering: (i, ..n) => upper(num-to-alpha.at(i)) + numbering(".1.1", ..n))
+  set figure(numbering: i => [#upper(num-to-alpha.at(counter(heading).get().at(0))).#i])
+  set math.equation(numbering: i => [(#upper(num-to-alpha.at(counter(heading).get().at(0))).#i)])
 
+  // Headings
   show heading: it => if it.level == 1 {
     set align(center)
     set text(size: 14pt, weight: "regular")
