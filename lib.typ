@@ -75,9 +75,9 @@
   }.replace(" ", "_")
 
   let caption = if sink.pos().len() == 0 {
-    caption + " (рисунок виконано самостійно)"
-  } else if sink.pos().first() == none {
     caption
+  } else if sink.pos().first() == none {
+    caption + " (рисунок виконано самостійно)"
   } else {
     [#caption (за даними #sink.pos().first())]
   }

@@ -19,9 +19,9 @@
 /// - title (str | none): Title of the work and the document. Optional.
 /// - variant (int | none): Variant of the work. Optional.
 /// - author ((name: str, group: (str | none), gender: ("m" | "f" | none)),):
-///   List of authors. Single author may be passed as a dictionary. Other types will be displayed like content.
+///   A dictionary of one author or an array of authors. Other types will be just displayed.
 /// - mentor ((name: str, degree: (str | none), gender: ("m" | "f" | none)),):
-///   List of mentors. Single mentor may be passed as a dictionary. Other types will be displayed like content.
+///   A dictionary of one mentor or an array of mentors. Other types will be just displayed.
 #let general(
   it,
   department: none,
@@ -30,10 +30,14 @@
   subject: none,
   title: none,
   variant: none,
-  author: (),
-  mentor: (),
+  author: none,
+  mentor: none,
   year: datetime.today().display("[year]"),
 ) = {
+  assert.ne(department, none, message: "Missing argument: \"department\"")
+  assert.ne(work_type, none, message: "Missing argument: \"work_type\"")
+  assert.ne(subject, none, message: "Missing argument: \"subject\"")
+
   if type(author) == array and author.len() == 1 { author = author.at(0) }
   if type(mentor) == array and mentor.len() == 1 { mentor = mentor.at(0) }
 
