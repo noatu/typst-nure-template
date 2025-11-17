@@ -118,8 +118,16 @@
     v(spacing * 2.5, weak: true)
   }
 
-  it
+  // blocks `like this` aren't welcome, so ` is replaced with "
+  show raw.where(block: false): it => text(
+    size: 14pt,
+    weight: "regular",
+    font: ("Times New Roman", "Liberation Serif"),
+  )["#it.text"]
   // }}}
+
+
+  it
 }
 
 /// DSTU 3008:2015 Appendices Style
