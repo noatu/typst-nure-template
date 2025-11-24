@@ -66,8 +66,10 @@
   }
 
   set figure.caption(separator: [ -- ])
-  show figure.where(kind: table): set figure.caption(position: top)
   show figure.caption.where(kind: table): set align(left)
+  show figure.where(kind: table): set figure.caption(position: top)
+  show figure.where(kind: raw): set figure.caption(position: top)
+  show figure.where(kind: raw): set align(left)
 
   // Numbering {{{1
   show heading.where(level: 1): it => {
@@ -91,6 +93,7 @@
     upper(it)
     v(spacing * 2, weak: true)
   } else {
+    // NOTE: completely different styling for ALL levels > 1
     set text(size: 14pt, weight: "regular")
 
     v(spacing * 2, weak: true)
@@ -103,7 +106,7 @@
   }
 
   // Listings {{{1
-  show raw: it => {
+  show raw.where(block: true): it => {
     let raw-spacing = 0.5em
     set block(spacing: raw-spacing)
     set par(spacing: raw-spacing, leading: raw-spacing)
@@ -120,7 +123,9 @@
 
   // blocks `like this` aren't welcome, so ` is replaced with "
   show raw.where(block: false): it => text(
+    lang: "uk",
     size: 14pt,
+    hyphenate: false,
     weight: "regular",
     font: ("Times New Roman", "Liberation Serif"),
   )["#it.text"]
@@ -141,6 +146,8 @@
   set math.equation(numbering: i => [(#upper(num-to-alpha.at(counter(heading).get().at(0))).#i)])
 
   // Headings
+  set heading(supplement: [Додаток])
+
   show heading: it => if it.level == 1 {
     set align(center)
     set text(size: 14pt, weight: "regular")

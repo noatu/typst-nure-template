@@ -5,7 +5,7 @@
  * Typst templates for NURE (Kharkiv National University of Radio Electronics) works
  */
 
-#import "style.typ": spacing, dstu-style, appendices-style
+#import "style.typ": appendices-style, dstu-style, spacing
 
 // Practice and Laboratory works template {{{
 
